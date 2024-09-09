@@ -10,8 +10,11 @@ Inputs: Players.py, Board.py, Ship.py, User Input
 Outputs: Battleship Game, interactive and dependent on User Input
 Other Sources: None
 Date: 09/04/2024
+last modified: 09/09/2024
 """
 
+import random
+import os
 
 class Player:
     def __init__(self, name, board):
@@ -21,6 +24,9 @@ class Player:
     def take_turn(self, opponent):
         """Allow player to take a turn by firing at opponent's board."""
         print(f"{self.name}'s turn!")
+        print("Your board: ")
+        self.board.display()
+        print("Opponent's board: ")
         opponent.board.display()
 
         # Get coordinates for firing
@@ -52,7 +58,7 @@ class Board:
 
     def display(self):
         # display board with column labels
-        rint("  " + " ".join([chr(ord("A") + i) for i in range(self.size)]))
+        print("   " + " ".join([chr(ord("A") + i) for i in range(self.size)]))
         for i in range(self.size):
             print(f"{i + 1:2} " + " ".join(self.grid[i]))
 
@@ -148,3 +154,7 @@ def play_game(player1, player2):
         if player1.board.all_ships_sunk():
             print(f"{player2.name} wins!")
             break
+
+
+def clear_screen():
+   os.system('cls' if os.name == 'nt' else 'clear')
