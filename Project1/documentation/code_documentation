@@ -1,1 +1,22 @@
+Code Documentation
+
+Group 13 Team Members
+- Taylor Slade
+- Kaitlyn Clements
+- Sam Muehlebach
+- Aaditi Chinawalkar
+- Elizabeth Soltis
+
+Programming UI and Language: 
+We decided to build the battleship game with the terminal as the User Interface and Python as our coding language.
+
+Overview: (what the game should look like)
+The two players decide on the number of ships (1-5) at the beginning of the game and input the number into the terminal when prompted.
+Then, each player will place their ships and before handing the device to the other player, the screen will clear to keep the ship placements confidential.
+The game then begins and the players take turns choosing where to strike their opponent. 
+They will be given a screen of their board with what spots have been hit by their opponents, and a board of the spots they have hit of their opponents.
+The terminal screen will clear between each turn to keep the ship placements confidential. 
+When one player has sunken all the other players ships, the terminal displays an "END GAME: PLAYER x WON" message, then exits the program/game.
+
+Classes/Objects Descriptions and Purposes:
 
