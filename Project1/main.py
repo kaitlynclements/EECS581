@@ -14,7 +14,10 @@ Date: 09/04/2024
 """
 
 import Battleship
-
+from Battleship import Board
+from Battleship import Player
+from Battleship import setup_ships
+from Battleship import play_game
 
 def main():
     # Initialize boards
