@@ -27,7 +27,7 @@ class Player:
         print("Your board: ")
         self.board.display()
         print("Opponent's board: ")
-        opponent.board.display()
+        opponent.board.display(show_ships=False)  
 
         # Get coordinates for firing
         while True:
@@ -56,11 +56,17 @@ class Board:
         self.hits = []
         self.misses = []
 
-    def display(self):
-        # display board with column labels
+    def display(self, show_ships=True):
+        """Display the board. If show_ships is False, hide ships and only show hits and misses."""
         print("   " + " ".join([chr(ord("A") + i) for i in range(self.size)]))
         for i in range(self.size):
-            print(f"{i + 1:2} " + " ".join(self.grid[i]))
+            row = []
+            for j in range(self.size):
+                if not show_ships and self.grid[i][j] == "S":
+                    row.append("~") 
+                else:
+                    row.append(self.grid[i][j])
+            print(f"{i + 1:2} " + " ".join(row))
 
     def place_ship(self, ship):
         """Place a ship on the board."""
