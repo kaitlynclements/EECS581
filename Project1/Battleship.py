@@ -27,6 +27,11 @@ class Player:
         print(f"{self.name}'s turn!")
         print("Your board: ")
         self.board.display()
+
+        # Display how many times current player's ships have been hit
+        print("\nHits on your ships:")
+        self.display_hits()
+
         print("\nOpponent's board: ")
         opponent.board.display(show_ships=False)  
 
@@ -49,7 +54,20 @@ class Player:
         print(f"\n{self.name} fired at {target}: {result}")
         if ship_sunk:
             print(f"{self.name} has sunk a ship!")
+    
+    def display_hits(self):
+        """Display how many times each ship has been hit."""
+        hit_count_by_ship = {}
+        for ship in self.board.ships:
+            hit_count = 0
+            for coord in ship.coordinates:
+                if coord in self.board.hits:
+                    hit_count += 1
+            hit_count_by_ship[tuple(ship.coordinates)] = hit_count
 
+        # Print hit details for each ship
+        for ship_coords, hit_count in hit_count_by_ship.items():
+            print(f"{ship_coords}: {hit_count} hit(s)")
 
 class Board:
     def __init__(self, size=10):
@@ -58,6 +76,7 @@ class Board:
         self.ships = []
         self.hits = []
         self.misses = []
+        self.hit_count = {} #tracking how many times each cell is hit as dictionary
 
     def display(self, show_ships=True):
         """Display the board. If show_ships is False, hide ships and only show hits and misses."""
@@ -67,6 +86,8 @@ class Board:
             for j in range(self.size):
                 if not show_ships and self.grid[i][j] == "S":
                     row.append("~") 
+                elif self.grid[i][j] == "X" and (i,j) in self.hit_count:
+                    row.append(str(self.hit_count[(i,j)])) #displaying number of times ship was hit
                 else:
                     row.append(self.grid[i][j])
             print(f"{i + 1:2} " + " ".join(row))
@@ -93,7 +114,11 @@ class Board:
     def receive_fire(self, x, y):
         """Handle an incoming shot at (x, y)."""
         ship_sunk = False
-        if self.grid[x][y] == "S":
+        if self.grid[x][y] == "S" or self.grid[x][y].isdigit(): 
+            if (x,y) in self.hit_count: #if hit, increment hit counter for spot
+                self.hit_count[(x,y)] += 1
+            else:
+                self.hit_count[(x,y)] = 1
             self.grid[x][y] = "X"
             self.hits.append((x, y))
             for ship in self.ships:
