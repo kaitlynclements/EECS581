@@ -18,6 +18,9 @@ from Battleship import Board
 from Battleship import Player
 from Battleship import setup_ships
 from Battleship import play_game
+from Battleship import clear_screen
+from Battleship import validate_numships
+import time
 
 def main():
     # Initialize boards
@@ -28,9 +31,17 @@ def main():
     player1 = Player("Player 1", board1)
     player2 = Player("Player 2", board2)
 
+    num_ships = validate_numships()
+
     # Set up ships for both players
-    setup_ships(player1)
-    setup_ships(player2)
+    setup_ships(player1, num_ships)
+    print("All of Player 1's ships are placed!")
+    time.sleep(5)
+    clear_screen()
+    setup_ships(player2, num_ships)
+    print("All of Player 2's ships are placed!")
+    time.sleep(5)
+    clear_screen()
 
     # Start the game
     play_game(player1, player2)
