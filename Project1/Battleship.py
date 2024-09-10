@@ -85,11 +85,11 @@ class Board:
             row = []
             for j in range(self.size):
                 if not show_ships and self.grid[i][j] == "S":
-                    row.append("~") 
+                    row.append("~") # Hide ships if show_ships is False
                 elif self.grid[i][j] == "X" and (i,j) in self.hit_count:
-                    row.append(str(self.hit_count[(i,j)])) #displaying number of times ship was hit
+                    row.append("X") # Always display X when a ship has been hit
                 else:
-                    row.append(self.grid[i][j])
+                    row.append(self.grid[i][j]) # Show the current state of the cell
             print(f"{i + 1:2} " + " ".join(row))
 
     def place_ship(self, ship):
