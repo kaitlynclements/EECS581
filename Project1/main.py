@@ -3,7 +3,7 @@ Authors: Kaitlyn Clements
          Taylor Slade
          Sam Muelbach
          Aaditi Chinawalker
-         Lizzie Solstis
+         Lizzie Soltis
 Assignment: EECS 581 Project 1; Battleship
 Program: main.py
 Description: main file to execute code for Battleship game. 
@@ -20,6 +20,7 @@ from Battleship import setup_ships
 from Battleship import play_game
 from Battleship import clear_screen
 from Battleship import validate_numships
+
 import time
 
 def main():

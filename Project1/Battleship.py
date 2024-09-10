@@ -3,7 +3,7 @@ Authors: Kaitlyn Clements
          Taylor Slade
          Sam Muelbach
          Aaditi Chinawalker
-         Lizzie Solstis
+         Lizzie Soltis
 Assignment: EECS 581 Project 1; Battleship
 Program: Battleship.pyBattleship file to identify different classes/objects of the game
 Inputs: Players.py, Board.py, Ship.py, User Input
@@ -45,8 +45,10 @@ class Player:
             print("Invalid coordinates, try again.")
 
         # Fire at opponent's board
-        result = opponent.board.receive_fire(x, y)
+        result, ship_sunk = opponent.board.receive_fire(x, y)
         print(f"\n{self.name} fired at {target}: {result}")
+        if ship_sunk:
+            print(f"{self.name} has sunk a ship!")
 
 
 class Board:
@@ -90,14 +92,19 @@ class Board:
 
     def receive_fire(self, x, y):
         """Handle an incoming shot at (x, y)."""
+        ship_sunk = False
         if self.grid[x][y] == "S":
             self.grid[x][y] = "X"
             self.hits.append((x, y))
-            return "Hit!"
+            # Check if the ship has been sunk
+            for ship in self.ships:
+                if ship.is_sunk(self.hits):
+                    ship_sunk = True
+            return "Hit!", ship_sunk
         else:
             self.grid[x][y] = "O"
             self.misses.append((x, y))
-            return "Miss!"
+            return "Miss!", ship_sunk
 
     def all_ships_sunk(self):
         """Check if all ships have been sunk."""
