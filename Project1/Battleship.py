@@ -15,6 +15,7 @@ last modified: 09/09/2024
 
 import random
 import os
+import time
 
 class Player:
     def __init__(self, name, board):
@@ -26,7 +27,7 @@ class Player:
         print(f"{self.name}'s turn!")
         print("Your board: ")
         self.board.display()
-        print("Opponent's board: ")
+        print("\nOpponent's board: ")
         opponent.board.display(show_ships=False)  
 
         # Get coordinates for firing
@@ -45,7 +46,7 @@ class Player:
 
         # Fire at opponent's board
         result = opponent.board.receive_fire(x, y)
-        print(f"{self.name} fired at {target}: {result}")
+        print(f"\n{self.name} fired at {target}: {result}")
 
 
 class Board:
@@ -105,6 +106,10 @@ class Board:
                 return False
         return True
 
+def input_to_index(input_str):
+    column = ord(input_str[0].upper()) - ord('A')
+    row = int(input_str[1:]) - 1
+    return row, column
 
 class Ship:
     def __init__(self, size, orientation, start_x, start_y):
@@ -113,7 +118,7 @@ class Ship:
         self.start_x = start_x
         self.start_y = start_y
         self.coordinates = self.generate_coordinates()
-
+    
     def generate_coordinates(self):
         coordinates = []
         if self.orientation == "H":
@@ -123,29 +128,67 @@ class Ship:
             for i in range(self.size):
                 coordinates.append((self.start_x + i, self.start_y))
         return coordinates
-
+        
     def is_sunk(self, hits):
         return all(coord in hits for coord in self.coordinates)
+    
+def validate_orientation():
+    while True:
+        ship_orientation = input("Enter orientation (H for horizontal, V for vertical): ").strip().upper()
+        if ship_orientation in ['H', 'V']:
+            return ship_orientation
+        else:
+            print("Invalid orientation! Please enter 'H' or 'V'.")
 
+def validate_position():
+    while True:
+        start_position = input("Enter the starting position (e.g., A1): ").strip().upper()
+        if len(start_position) < 2 or len(start_position) > 3:
+            print("Invalid position! Position must be a letter (A-J) followed by a number (1-10).")
+            continue
+        
+        column_letter = start_position[0]
+        if column_letter < 'A' or column_letter > 'J':
+            print("Invalid position! The letter must be between A and J.")
+            continue
+        
+        try:
+            row_number = int(start_position[1:])
+            if row_number < 1 or row_number > 10:
+                print("Invalid position! The number must be between 1 and 10.")
+                continue
+        except ValueError:
+            print("Invalid position! The number must be a valid integer.")
+            continue
+        
+        return start_position
+    
+def validate_numships():
+    while True:
+        ship_num = int(input("Enter the number of ships each player will get (minimum of 1, maximum of 5): "))
+        if ship_num in [1,2,3,4,5]:
+            return ship_num
+        else:
+            print("Invalid number of ships! Please enter a number between 1 and 5")
 
-def setup_ships(player):
+def setup_ships(player, num_ships):
     """Set up ships for the player."""
-    ship_sizes = [1, 2, 3, 4, 5]
+    ship_sizes = list(range(1, num_ships + 1))
+
     for size in ship_sizes:
         while True:
-            orientation = random.choice(["H", "V"])
-            if orientation == "H":
-                start_x = random.randint(0, 9)
-                start_y = random.randint(0, 9 - size)
-            else:
-                start_x = random.randint(0, 9 - size)
-                start_y = random.randint(0, 9)
-
-            ship = Ship(size, orientation, start_x, start_y)
+            ship_orientation = validate_orientation()
+            start_position = validate_position()
+            start_x, start_y = input_to_index(start_position)
+            ship = Ship(size, ship_orientation, start_x, start_y)
             if player.board.is_valid_position(ship):
                 player.board.place_ship(ship)
                 print(f"{player.name} placed a ship of size {size}.")
+                print(f"{player.name}'s board: ")
+                player.board.display()
                 break
+            else:
+                print("invalid position! Please choose another location")
 
 
 def play_game(player1, player2):
@@ -155,11 +198,15 @@ def play_game(player1, player2):
         if player2.board.all_ships_sunk():
             print(f"{player1.name} wins!")
             break
+        time.sleep(4)
+        clear_screen()
 
         player2.take_turn(player1)
         if player1.board.all_ships_sunk():
             print(f"{player2.name} wins!")
             break
+        time.sleep(4)
+        clear_screen()
 
 
 def clear_screen():
