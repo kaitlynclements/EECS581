@@ -96,10 +96,10 @@ class Board:
         if self.grid[x][y] == "S":
             self.grid[x][y] = "X"
             self.hits.append((x, y))
-            # Check if the ship has been sunk
             for ship in self.ships:
-                if ship.is_sunk(self.hits):
-                    ship_sunk = True
+                if (x, y) in ship.coordinates: 
+                    if ship.is_sunk(self.hits):
+                        ship_sunk = True 
             return "Hit!", ship_sunk
         else:
             self.grid[x][y] = "O"
@@ -180,6 +180,11 @@ def validate_numships():
 
 def setup_ships(player, num_ships):
     """Set up ships for the player."""
+    print(f"{player.name}'s turn to place ships!")
+    
+    print(f"{player.name}'s current board:")
+    player.board.display()
+
     ship_sizes = list(range(1, num_ships + 1))
 
     for size in ship_sizes:
@@ -192,16 +197,17 @@ def setup_ships(player, num_ships):
                 player.board.place_ship(ship)
                 print(f"{player.name} placed a ship of size {size}.")
                 print(f"{player.name}'s board: ")
-                player.board.display()
+                player.board.display() 
                 break
             else:
-                print("invalid position! Please choose another location")
+                print("Invalid position! Please choose another location")
 
 
 def play_game(player1, player2):
     """Main game loop."""
     while True:
         player1.take_turn(player2)
+        time.sleep(3)
         if player2.board.all_ships_sunk():
             print(f"{player1.name} wins!")
             break
@@ -209,6 +215,7 @@ def play_game(player1, player2):
         clear_screen()
 
         player2.take_turn(player1)
+        time.sleep(3)
         if player1.board.all_ships_sunk():
             print(f"{player2.name} wins!")
             break
