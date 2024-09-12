@@ -1,7 +1,7 @@
 """
 Authors: Kaitlyn Clements
          Taylor Slade
-         Sam Muelbach
+         Sam Muehlebach
          Aaditi Chinawalker
          Lizzie Soltis
 Assignment: EECS 581 Project 1; Battleship
