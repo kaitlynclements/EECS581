@@ -18,5 +18,4 @@ They will be given a screen of their board with what spots have been hit by thei
 The terminal screen will clear between each turn to keep the ship placements confidential. 
 When one player has sunken all the other players ships, the terminal displays an "END GAME: PLAYER x WON" message, then exits the program/game.
 
-Classes/Objects Descriptions and Purposes:
 
