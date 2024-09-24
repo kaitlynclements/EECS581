@@ -1,0 +1,18 @@
+Code Documentation
+
+Group 13 Team Members
+- Taylor Slade
+- Kaitlyn Clements
+- Sam Muehlebach
+- Aaditi Chinawalkar
+- Elizabeth Soltis
+
+Programming UI and Language: 
+The teams project 1 we received used JavaScript, Python, CSS, and HTML
+
+Overview: (what the game should look like)
+Game from Project 1 but includes a new AI feature and a new feature we decide upon- 
+our team is thinking the 'giant shot' feature to shoot a 3x3 shot on the grid
+
+Previous Team's GitHub Repo: 
+https://github.com/Christoper-Harvey/EECS-581-project-1
