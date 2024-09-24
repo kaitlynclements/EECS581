@@ -67,7 +67,11 @@
                 <p>Hits: <span id="p2-hits">0</span></p>
                 <p>Misses: <span id="p2-miss">0</span></p>
                 <p>Ships: <span id="p2-ships-left">0</span></p>
+                <!-- Display remaining special shots for the current player -->
+                <h3 id="special-shots-remaining" style="display: block;">Special Shots Remaining: 3</h3>
             </div>
+        <!-- Special Shot Button -->
+        <button id="special-shot-button" style="display: none;">Special Shot</button>
 	    <!-- End turn button -->
             <button id="end-turn" style="display: none;">End Turn</button>
             <span id="text-alert" style="display: none;">alert text</span>
@@ -106,9 +110,9 @@
     
     <!-- External JS files -->
     <script src="/static/js/player.js"></script>
+    <script src="/static/js/turnSystem.js"></script>
     <script src="/static/js/game.js"></script>
     <script src="/static/js/board.js"></script>
-    <script src="/static/js/turnSystem.js"></script>
     <script src="/static/js/fireworks.js"></script>
     <script src="/static/js/animations.js"></script>
     <script src="/static/js/sfx.js"></script>

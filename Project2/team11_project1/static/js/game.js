@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const boards = [
         document.getElementById("p1opponent"),
 	    document.getElementById("p2opponent"),
-    ]
-
+    ];
+    let currentPlayer = p1; //current player pointer; defaults to Player 1 (p1) from turnSystem.js
     //Defines the listener to switch turns
     document.getElementById('pass').addEventListener('click', function() {
         // Hide the pass screen when the button is clicked
@@ -53,13 +53,15 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('start-game-button').style.display = 'none';
         document.getElementById('controls').style.display = 'block';
         document.getElementById("game-state").innerText = "Ship Count";
+        // Update the special shot button status for the starting player
+        updateSpecialShotButton(currentPlayer);
     });
 
     //Defines the listener to confirm the ship placement
     document.getElementById("shipConfirm").addEventListener("click", function (){
         //Notifies player1 to initate their turn
         document.getElementById("game-state").innerText = "Player 1's Turn";
-
+        
         numShips = parseInt(document.getElementById("ship-length").value);
         //Displays the prompts for the ship confirmation
         document.getElementById("shipConfirm").style.display = "none";
@@ -81,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //Updates game state
         updateShipPlacementStatus();
     });
+    
 
     // Function to update ship placement status
     function updateShipPlacementStatus() {
@@ -154,6 +157,75 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("game-state").innerText = "Player 1's Turn";
     });
+    
+
+    // Event listener for special shot button click
+    document.getElementById("special-shot-button").addEventListener("click", function () {
+        if (currentPlayer.canUseSpecialShot()) {
+            // Ask player for input coordinate
+            const centerCoord = prompt("Enter the center coordinate for your 3x3 special shot (e.g., D5):").toUpperCase();
+            if (centerCoord && isValidCoordinate(centerCoord)) {
+                const colIndex = colLabels.indexOf(centerCoord[0]);
+                const rowIndex = parseInt(centerCoord.slice(1)) - 1;
+
+                // Fire the special shot at the 3x3 area
+                fireSpecialShot(currentPlayer, rowIndex, colIndex);
+            } else {
+                alert("Invalid coordinates. Please enter a valid center coordinate.");
+            }
+        } else {
+            alert("Special shot not available.");
+        }
+        updateSpecialShotButton(currentPlayer); // Update the button color/status
+    });
+
+     // Function to validate the coordinate input by the user
+     function isValidCoordinate(coord) {
+        if (coord.length < 2) return false;
+        const col = coord[0];
+        const row = parseInt(coord.slice(1));
+        return colLabels.includes(col) && row >= 1 && row <= 10;
+    }
+    // Fire the 3x3 special shot and iterate through each cell
+    function fireSpecialShot(player, centerRow, centerCol) {
+        const range = [-1, 0, 1]; 
+        let hits = 0;
+        range.forEach(dx => {
+            range.forEach(dy => {
+                const row = centerRow + dx;
+                const col = centerCol + dy;
+
+                if (isValidCell(row, col)) {
+                    const opponentBoard = turn === 1 ? document.getElementById("p2self") : document.getElementById("p1self");
+                    const cell = opponentBoard.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+
+                    if (cell && cell.dataset.status === 'ship') {
+                        playHitAnimation(cell);
+                        cell.dataset.status = 'hit';
+                        cell.classList.add("hit");
+                        hits++;
+                    } else if (cell) {
+                        playMissAnimation(cell);
+                        cell.dataset.status = 'miss';
+                        cell.classList.add("miss");
+                    }
+                }
+            });
+        });
+        // Deduct one special shot from the player
+        player.useSpecialShot(); 
+        alert(`Special shot fired! Hits: ${hits}`);
+         // Update the button display and notify the game of the player's shot
+        updateSpecialShotButton(player); 
+        // Update the special shots remaining display
+        document.getElementById("special-shots-remaining").innerText = `Special Shots Remaining: ${player.getRemainingSpecialShots()}`;
+
+        turn = nextTurn();  // Proceed to the next player's turn
+    }
+    function isValidCell(row, col) {
+        return row >= 0 && row < 10 && col >= 0 && col < 10; 
+    }
+
 
     // Event listener for swapping turns
     document.getElementById("end-turn").addEventListener("click", function () {

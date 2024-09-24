@@ -43,7 +43,22 @@ document.addEventListener("DOMContentLoaded", function () {//loading the board i
                 cellDiv.classList.add("cell");//new class for cell
                 cellDiv.dataset.row = rowIndex;//assign new cell row and col index
                 cellDiv.dataset.col = colIndex;
+                cellDiv.dataset.status = "empty"; // Initialize the status as empty
                 board.appendChild(cellDiv);//add new cell to board
+                
+                // Event listener for handling hits/misses during regular shots
+                cellDiv.addEventListener("click", function () {
+                    if (isAttackPhase && !hasFired) {
+                        if (cellDiv.dataset.status === "ship") {
+                            cellDiv.classList.add("hit");
+                            cellDiv.dataset.status = "hit";
+                        } else if (cellDiv.dataset.status === "empty") {
+                            cellDiv.classList.add("miss");
+                            cellDiv.dataset.status = "miss";
+                        }
+                        hasFired = true;
+                    }
+                });
             });
         });
     });

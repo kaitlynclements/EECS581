@@ -214,3 +214,24 @@ body {
     height: 100vh;
     z-index: 9999;
 }
+#special-shot-button {
+    display: block;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-top: 20px;
+    background-color: grey; /* Default to greyed out */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#special-shot-button.disabled {
+    background-color: grey; /* Grey when disabled */
+    cursor: not-allowed;
+}
+
+#special-shot-button.enabled {
+    background-color: red; /* Red when enabled */
+    display: block
+}

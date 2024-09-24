@@ -12,6 +12,19 @@ let turn = 1; //int to track which player's turn it is - alternates between 1 an
 let p1 = new Player(1)  //Player with id 1
 let p2 = new Player(2) //Player with id 2
 
+const specialShotButton = document.getElementById("special-shot-button"); // Ensure this is defined
+// Function to update the visibility and status of the special shot button
+function updateSpecialShotButton(player) {
+    if (player.canUseSpecialShot()) {
+        specialShotButton.style.backgroundColor = 'red'; // Red for available
+        specialShotButton.disabled = false;
+        specialShotButton.style.display = 'block'; // Ensure it's visible
+    } else {
+        specialShotButton.style.backgroundColor = 'grey'; // Grey out if not available
+        specialShotButton.disabled = true;
+        specialShotButton.style.display = 'none'; // Still show but disabled
+    }
+}
 //switches turn to the next player
 function nextTurn() {
     if(turn == 1) {//change to p2's turn
@@ -23,6 +36,9 @@ function nextTurn() {
         document.getElementById("p2opponent").style.display = "grid";
 
         document.getElementById("game-state").innerText = "Player 2's Turn";//top of page now says it's p2's turn
+        
+        // Update special shot button visibility for Player 2
+        updateSpecialShotButton(p2);
     } else {//change to p1's turn
         turn = 1;//turn tracker to p1
         document.getElementById("p1self").style.display = "grid";//unhide p1's boards
@@ -32,7 +48,9 @@ function nextTurn() {
         document.getElementById("p2opponent").style.display = "none";
 
         document.getElementById("game-state").innerText = "Player 1's Turn";//top of page now says its p1's turn
+         // Update special shot button visibility for Player 1
+         updateSpecialShotButton(p1);
     }
 
-    return turn
+    return turn;
 }

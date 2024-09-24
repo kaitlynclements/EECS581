@@ -37,6 +37,7 @@ class Player {
         this.id = id;
         this.ships = [];
         this.shipsLeft = 0;
+        this.specialShotsRemaining = 1; //Each player starts with 1 special shot
     }
 
     addShip(length, coordinates) {
@@ -52,5 +53,23 @@ class Player {
             return true; // Ship was sunk
         }
         return false; // Ship was hit but not sunk
+    }
+    //Check if the player can use a special shot
+    canUseSpecialShot() {
+        return this.specialShotsRemaining > 0;
+    }
+    //Use a special shot and decrease the remaining count
+    useSpecialShot() {
+        if (this.canUseSpecialShot()) {
+            this.specialShotsRemaining--;
+            return true;
+        }
+        console.warn(`Player ${this.id} attempted to use a special shot but has none remaining.`);
+        return false;
+    }
+
+    //Method to get the number of remaining special shots
+    getRemainingSpecialShots() {
+        return this.specialShotsRemaining;
     }
 }
