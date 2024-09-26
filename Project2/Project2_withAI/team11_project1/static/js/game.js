@@ -15,7 +15,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Players
     let player1 = new Player(1);
     let player2 = new Player(2); // For two-player mode
-    let aiPlayer = null; // For single-player mode
+
+    // Initialize special shot usage flags
+    player1.specialShotUsed = false;
+    player2.specialShotUsed = false;
 
     // Ship placement variables
     let numShips = 0;
@@ -59,6 +62,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const playAgainButton = document.getElementById("play-again-button");
 
     let boards = []; // To be assigned based on mode
+
+    // Access the Special Shot button
+    const specialShotButton = document.getElementById('special-shot');
+
+    // Add event listener to the Special Shot button
+    specialShotButton.addEventListener("click", handleSpecialShot);
 
     // Function to attach event listeners to boards
     function attachAttackEventListeners() {
@@ -443,6 +452,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         gameStateLabel.innerText = "Player 1's Turn";
+
+        // Update the Special Shot button's state
+        updateSpecialShotButton();
     }
 
     // Event Listener for swapping turns
@@ -503,6 +515,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Re-attach event listeners to the active opponent's board
             attachAttackEventListeners();
+
+            // Update the Special Shot button's state
+            updateSpecialShotButton();
         } else if (gameMode === 'single-player') {
             if (turn === 1) {
                 // Switching to AI's turn
@@ -518,6 +533,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 showPassScreen("Pass to Player 1.");
                 console.log("Player's Turn");
             }
+
+            // Update the Special Shot button's state
+            updateSpecialShotButton();
         }
     }
 
@@ -655,6 +673,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Reset turn back to Player 1
             turn = 1;
+
+            // Update the Special Shot button's state
+            updateSpecialShotButton();
         }, 1000); // 1-second delay for better UX
     }
 
@@ -777,5 +798,95 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function startFireworks() {
         // Implement your fireworks animation here
+    }
+
+    // Function to handle the Special Shot
+    // Function to handle the Special Shot
+    function handleSpecialShot() {
+        let currentPlayer = (turn === 1) ? player1 : player2;
+
+        // Check if the special shot has already been used
+        if (currentPlayer.specialShotUsed) {
+            alert("You have already used your Special Shot.");
+            return;
+        }
+
+        // Prompt for the center coordinate
+        let centerCoord = prompt("Enter the center coordinate for your Special Shot (e.g., E5):");
+        if (centerCoord === null) {
+            // User cancelled the prompt
+            return;
+        }
+        centerCoord = centerCoord.trim().toUpperCase();
+
+        // Validate coordinate format
+        const regex = /^([A-J])(10|[1-9])$/;
+        if (!regex.test(centerCoord)) {
+            alert("Invalid coordinate format. Please enter a letter (A-J) followed by a number (1-10).");
+            handleSpecialShot(); // Retry
+            return;
+        }
+
+        // Parse coordinate
+        const colLetter = centerCoord.match(/[A-J]/)[0];
+        const rowStr = centerCoord.match(/\d+/)[0];
+        const col = colLabels.indexOf(colLetter);
+        const row = parseInt(rowStr) - 1;
+
+        // Define the 3x3 grid coordinates
+        let shotCoords = [];
+        for (let r = row - 1; r <= row + 1; r++) {
+            for (let c = col - 1; c <= col + 1; c++) {
+                shotCoords.push({ row: r, col: c });
+            }
+        }
+
+        // Validate all coordinates are within the board
+        let allValid = true;
+        for (let coord of shotCoords) {
+            if (coord.row < 0 || coord.row > 9 || coord.col < 0 || coord.col > 9) {
+                allValid = false;
+                break;
+            }
+        }
+
+        if (!allValid) {
+            alert("Invalid coordinates for Special Shot. All 3x3 cells must be within the board.");
+            handleSpecialShot(); // Retry
+            return;
+        }
+
+        // Process each attack in the 3x3 grid
+        let targetPlayer = (turn === 1) ? player2 : player1;
+        let targetId = (turn === 1) ? 'p2self' : 'p1self';
+        let attackerId = (turn === 1) ? 'player1' : 'player2';
+
+        shotCoords.forEach(coord => {
+            let cell = document.getElementById(targetId).querySelector(`.cell[data-row="${coord.row}"][data-col="${coord.col}"]`);
+            if (cell && !cell.classList.contains("hit") && !cell.classList.contains("miss")) {
+                processAttack(targetPlayer, cell, targetId, attackerId);
+            }
+        });
+
+        // Mark the special shot as used
+        currentPlayer.specialShotUsed = true;
+
+        // Disable the Special Shot button
+        specialShotButton.disabled = true;
+
+        // Allow the player to end their turn
+        hasFired = true;
+    }
+
+
+    // Function to update the Special Shot button's state
+    function updateSpecialShotButton() {
+        if (!isAttackPhase) {
+            specialShotButton.style.display = 'none';
+            return;
+        }
+        specialShotButton.style.display = 'inline-block';
+        let currentPlayer = (turn === 1) ? player1 : player2;
+        specialShotButton.disabled = currentPlayer.specialShotUsed;
     }
 });
