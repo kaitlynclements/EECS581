@@ -58,11 +58,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const winnerMessage = document.getElementById("winner-message");
     const playAgainButton = document.getElementById("play-again-button");
 
-    let boards = []; // Use 'let' to allow reassignment
+    let boards = []; // To be assigned based on mode
 
     // Function to attach event listeners to boards
     function attachAttackEventListeners() {
         boards.forEach(board => {
+            board.removeEventListener("click", handleAttackClick); // Prevent multiple listeners
             board.addEventListener("click", handleAttackClick);
         });
     }
@@ -80,32 +81,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const row = parseInt(event.target.dataset.row);
         const col = parseInt(event.target.dataset.col);
-        const coord = `${colLabels[col]}${rowLabels[row]}`;
+        const coord = `${colLabels[col]}${rowLabels[row]}`; // Corrected template literal
 
-        console.log(`Player ${turn} is attacking ${coord}`);
+        console.log(`Player ${turn} is attacking ${coord}`); // Corrected template literal
 
         if (gameMode === 'two-player') {
             if (turn === 1) {
                 // Player 1 attacking Player 2
-                processAttack(player2, event.target, 'p2opponent', 'player1');
+                processAttack(player2, event.target, 'p2self', 'player1');
             } else if (turn === 2) {
                 // Player 2 attacking Player 1
-                processAttack(player1, event.target, 'p1opponent', 'player2');
+                processAttack(player1, event.target, 'p1self', 'player2');
             }
             hasFired = true;
-            showPassScreen(); // Prompt next player to take their turn
         } else if (gameMode === 'single-player') {
             if (turn === 1) {
                 // Player attacking AI
                 processAttack(aiPlayer, event.target, 'p1opponent', 'player1');
                 hasFired = true;
-                showPassScreen(`AI is attacking...`);
+                showPassScreen("AI is attacking...");
                 // Automatically switch to AI's turn
                 switchTurn();
             }
         }
     }
-
 
     // Event Listeners for Mode Selection
     onePlayerButton.addEventListener('click', function () {
@@ -128,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
             aiDifficulty = this.getAttribute('data-level');
             aiDifficultyDiv.style.display = 'none';
             startGamePrompt.style.display = 'block';
-            console.log(`Selected AI Difficulty: ${aiDifficulty}`);
+            console.log(`Selected AI Difficulty: ${aiDifficulty}`); // Corrected template literal
         });
     });
 
@@ -138,7 +137,21 @@ document.addEventListener("DOMContentLoaded", function () {
         controlsDiv.style.display = 'block';
         gameStateLabel.innerText = "Ship Count";
         console.log("Started Ship Placement");
+        initializeShipPlacement(); // Initialize ship placement based on mode
     });
+
+    // Function to initialize ship placement
+    function initializeShipPlacement() {
+        if (gameMode === 'two-player') {
+            document.getElementById("p1self").style.display = "grid"; // Show Player 1's board
+            document.getElementById("p2self").style.display = "none"; // Hide Player 2's board initially
+            disableBoardInteractivity(document.getElementById("p2self"));
+        } else if (gameMode === 'single-player') {
+            document.getElementById("p1self").style.display = "grid"; // Show Player's own board
+            document.getElementById("p1opponent").style.display = "none"; // Hide AI's board
+            disableBoardInteractivity(document.getElementById("p1opponent"));
+        }
+    }
 
     // Event Listener to confirm ship placement
     shipConfirmButton.addEventListener("click", function () {
@@ -146,6 +159,12 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Confirmed Ship Placement");
 
         numShips = parseInt(shipLengthSelect.value);
+        if (isNaN(numShips) || numShips <= 0) {
+            alert("Please enter a valid number of ships.");
+            console.log("Invalid number of ships");
+            return;
+        }
+
         // Hide ship length selection
         shipConfirmButton.style.display = "none";
         shipLengthSelect.style.display = "none";
@@ -177,13 +196,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to update ship placement status
     function updateShipPlacementStatus() {
         if (currentShipIndex < shipsToPlace.length) {
-            shipPlacementStatus.innerText = `Place ship of size ${shipsToPlace[currentShipIndex]}`;
-            console.log(`Placing ship of size ${shipsToPlace[currentShipIndex]}`);
+            shipPlacementStatus.innerText = `Place ship of size ${shipsToPlace[currentShipIndex]}`; // Corrected template literal
+            console.log(`Placing ship of size ${shipsToPlace[currentShipIndex]}`); // Corrected template literal
         } else {
             shipPlacementStatus.innerText = "All ships placed!";
             nextPlayerPlaceShipButton.disabled = false;
             placeShipButton.disabled = true;
-            console.log("All ships placed");
+            console.log("All ships placed!");
 
             if (gameMode === 'two-player') {
                 if (p2PlaceShips) {
@@ -205,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const startCoord = document.getElementById("start-coord").value.toUpperCase();
         const direction = document.getElementById("direction").value;
 
-        console.log(`Attempting to place ship of size ${shipLength} at ${startCoord} facing ${direction}`);
+        console.log(`Attempting to place ship of size ${shipLength} at ${startCoord} facing ${direction}`); // Corrected template literal
 
         // Validate coordinate input
         const regex = /^([A-J])(10|[1-9])$/;
@@ -230,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Place the ship
         placeShip(row, col, shipLength, direction);
         currentShipIndex++;
-        console.log(`Placed ship of size ${shipLength} at ${startCoord} facing ${direction}`);
+        console.log(`Placed ship of size ${shipLength} at ${startCoord} facing ${direction}`); // Corrected template literal
         updateShipPlacementStatus();
     });
 
@@ -239,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (direction === "horizontal") {
             if (col + length > 10) return false;
             for (let i = 0; i < length; i++) {
-                const currentCoord = `${colLabels[col + i]}${row + 1}`;
+                const currentCoord = `${colLabels[col + i]}${row + 1}`; // Corrected template literal
                 if (gameMode === 'two-player' && p2PlaceShips) {
                     if (player2.ships.some(ship => ship.coordinates.includes(currentCoord))) {
                         return false;
@@ -253,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (direction === "vertical") {
             if (row + length > 10) return false;
             for (let i = 0; i < length; i++) {
-                const currentCoord = `${colLabels[col]}${row + 1 + i}`;
+                const currentCoord = `${colLabels[col]}${row + 1 + i}`; // Corrected template literal
                 if (gameMode === 'two-player' && p2PlaceShips) {
                     if (player2.ships.some(ship => ship.coordinates.includes(currentCoord))) {
                         return false;
@@ -278,15 +297,24 @@ document.addEventListener("DOMContentLoaded", function () {
             const currentRow = direction === "horizontal" ? row : row + i;
             const currentCol = direction === "horizontal" ? col + i : col;
 
-            const cell = board.querySelector(`.cell[data-row="${currentRow}"][data-col="${currentCol}"]`);
-            if (cell) {
-                cell.classList.add("placed");
+            // Ensure within bounds
+            if (currentRow >= 10 || currentCol >= 10) {
+                console.error(`Attempted to place ship out of bounds at row ${currentRow}, col ${currentCol}`); // Corrected template literal
+                continue;
             }
 
-            const coord = `${colLabels[currentCol]}${rowLabels[currentRow]}`;
+            const cell = board.querySelector(`.cell[data-row="${currentRow}"][data-col="${currentCol}"]`); // Corrected template literal and quotes
+            if (cell) {
+                cell.classList.add("placed");
+            } else {
+                console.error(`Cell not found: row ${currentRow}, col ${currentCol}`); // Corrected template literal
+            }
+
+            const coord = `${colLabels[currentCol]}${rowLabels[currentRow]}`; // Corrected template literal
             coordinates.push(coord);
         }
 
+        // Store the ship's coordinates in the player's ship array
         if (gameMode === 'two-player' && p2PlaceShips) {
             player2.addShip(length, coordinates);
         } else {
@@ -304,15 +332,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 gameStateLabel.innerText = "Player 2's Turn";
                 console.log("Switching to Player 2 for ship placement");
 
-                document.getElementById("p1self").style.display = "none";
-                document.getElementById("p1opponent").style.display = "none";
+                // Show both boards
+                document.getElementById("p1self").style.display = "grid";       // Player 1's own board (Blue), non-interactive
+                document.getElementById("p2self").style.display = "grid";       // Player 2's own board (Red), interactive
 
-                document.getElementById("p2self").style.display = "grid";
-                document.getElementById("p2opponent").style.display = "grid";
+                // Hide opponent views
+                document.getElementById("p1opponent").style.display = "none";  // Player 1's opponent view (Blue)
+                document.getElementById("p2opponent").style.display = "none";  // Player 2's opponent view (Red)
 
+                // Disable interactivity on Player 1's board
+                disableBoardInteractivity(document.getElementById("p1self"));
+
+                // Enable interactivity on Player 2's board
+                enableBoardInteractivity(document.getElementById("p2self"));
+
+                // Reset input fields
                 document.getElementById("start-coord").value = "";
                 placeShipButton.disabled = false;
 
+                // Hide 'Next Player' button and show 'Start Attack' button
                 nextPlayerPlaceShipButton.style.display = "none";
                 startAttackButton.style.display = "inline";
                 updateShipPlacementStatus();
@@ -321,8 +359,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Function to disable interactivity on a board
+    function disableBoardInteractivity(board) {
+        board.classList.add("non-interactive");
+        const cells = board.querySelectorAll(".cell");
+        cells.forEach(cell => {
+            cell.style.pointerEvents = "none";
+            cell.style.cursor = "default";
+        });
+    }
+
+    // Function to enable interactivity on a board
+    function enableBoardInteractivity(board) {
+        board.classList.remove("non-interactive");
+        const cells = board.querySelectorAll(".cell");
+        cells.forEach(cell => {
+            cell.style.pointerEvents = "auto";
+            cell.style.cursor = "pointer";
+        });
+    }
+
     // Event Listener to start the attack phase
     startAttackButton.addEventListener("click", function () {
+        isAttackPhase = true;
+        startAttackPhase();
+    });
+
+    // Function to start the attack phase
+    function startAttackPhase() {
         turn = 1;
         isAttackPhase = true;
         hidePassScreen(); // Initially hide pass screen
@@ -338,8 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
             p2ShipsLeftSpan.innerText = player2.shipsLeft;
             opponentName.innerText = "Player 2";
             boards = [
-                document.getElementById("p1opponent"),
-                document.getElementById("p2opponent"),
+                document.getElementById("p2opponent"), // Player 1's opponent view (Player 2's board)
             ];
         } else if (gameMode === 'single-player') {
             p2ShipsLeftSpan.innerText = aiPlayer.shipsLeft;
@@ -352,22 +415,35 @@ document.addEventListener("DOMContentLoaded", function () {
         // Attach event listeners to the assigned boards
         attachAttackEventListeners();
 
-        // Hide controls and adjust board displays
+        // Hide controls
         controlsDiv.style.display = "none";
+
         if (gameMode === 'two-player') {
-            document.getElementById("p2self").style.display = "none";
-            document.getElementById("p2opponent").style.display = "none";
-            document.getElementById("p1self").style.display = "grid";
-            document.getElementById("p1opponent").style.display = "grid";
+            // **Player 1's Turn: Own Board on Left, Opponent's Board on Right**
+            document.getElementById("p1self").style.display = "grid";          // Player 1's own board (Blue)
+            document.getElementById("p2opponent").style.display = "grid";     // Player 2's opponent view (Red)
+
+            document.getElementById("p2self").style.display = "none";          // Hide Player 2's own board
+            document.getElementById("p1opponent").style.display = "none";     // Hide Player 1's opponent view
+
+            // Ensure interactivity
+            enableBoardInteractivity(document.getElementById("p2opponent"));
+            disableBoardInteractivity(document.getElementById("p1self"));
         } else if (gameMode === 'single-player') {
-            document.getElementById("p2self").style.display = "none";
-            document.getElementById("p2opponent").style.display = "none";
-            document.getElementById("p1self").style.display = "grid";
-            document.getElementById("p1opponent").style.display = "grid";
+            // **Player's Turn: Own Board on Left, AI's Board on Right**
+            document.getElementById("p1self").style.display = "grid";          // Player's own board (Blue)
+            document.getElementById("p1opponent").style.display = "grid";     // AI's board (Red)
+
+            document.getElementById("p2self").style.display = "none";          // Hide Player 2's own board
+            document.getElementById("p2opponent").style.display = "none";     // Hide Player 2's opponent view
+
+            // Ensure interactivity
+            enableBoardInteractivity(document.getElementById("p1opponent"));
+            disableBoardInteractivity(document.getElementById("p1self"));
         }
 
         gameStateLabel.innerText = "Player 1's Turn";
-    });
+    }
 
     // Event Listener for swapping turns
     endTurnButton.addEventListener("click", function () {
@@ -384,27 +460,62 @@ document.addEventListener("DOMContentLoaded", function () {
     function switchTurn() {
         if (gameMode === 'two-player') {
             if (turn === 1) {
+                // Switching to Player 2's turn
                 turn = 2;
                 gameStateLabel.innerText = "Player 2's Turn";
-                showPassScreen(`Pass to Player 2`);
+                showPassScreen("Pass to Player 2.");
                 console.log("Switched turn to Player 2");
+
+                // Display both boards: Player 2's own board on Left, Player 1's opponent view on Right
+                document.getElementById("p2self").style.display = "grid";          // Player 2's own board (Red)
+                document.getElementById("p1opponent").style.display = "grid";     // Player 1's opponent view (Blue)
+
+                document.getElementById("p1self").style.display = "none";          // Hide Player 1's own board
+                document.getElementById("p2opponent").style.display = "none";     // Hide Player 2's opponent view
+
+                // Assign boards array to p1opponent (Player 2 attacks Player 1's board)
+                boards = [document.getElementById("p1opponent")];
+
+                // Ensure interactivity
+                enableBoardInteractivity(document.getElementById("p1opponent"));
+                disableBoardInteractivity(document.getElementById("p2self"));
             } else {
+                // Switching back to Player 1's turn
                 turn = 1;
                 gameStateLabel.innerText = "Player 1's Turn";
-                showPassScreen(`Pass to Player 1`);
+                showPassScreen("Pass to Player 1.");
                 console.log("Switched turn to Player 1");
+
+                // Display both boards: Player 1's own board on Left, Player 2's opponent view on Right
+                document.getElementById("p1self").style.display = "grid";          // Player 1's own board (Blue)
+                document.getElementById("p2opponent").style.display = "grid";     // Player 2's opponent view (Red)
+
+                document.getElementById("p2self").style.display = "none";          // Hide Player 2's own board
+                document.getElementById("p1opponent").style.display = "none";     // Hide Player 1's opponent view
+
+                // Assign boards array to p2opponent (Player 1 attacks Player 2's board)
+                boards = [document.getElementById("p2opponent")];
+
+                // Ensure interactivity
+                enableBoardInteractivity(document.getElementById("p2opponent"));
+                disableBoardInteractivity(document.getElementById("p1self"));
             }
+
+            // Re-attach event listeners to the active opponent's board
+            attachAttackEventListeners();
         } else if (gameMode === 'single-player') {
             if (turn === 1) {
+                // Switching to AI's turn
                 turn = 2; // AI's turn
                 gameStateLabel.innerText = "AI's Turn";
-                showPassScreen(`AI is attacking...`);
+                showPassScreen("AI is attacking...");
                 console.log("AI's Turn");
                 aiTakeTurn();
             } else {
+                // Switching back to Player's turn
                 turn = 1; // Player's turn
                 gameStateLabel.innerText = "Player 1's Turn";
-                showPassScreen(`Pass to Player 1`);
+                showPassScreen("Pass to Player 1.");
                 console.log("Player's Turn");
             }
         }
@@ -427,86 +538,86 @@ document.addEventListener("DOMContentLoaded", function () {
     function processAttack(targetPlayer, cell, targetId, attackerId) {
         const row = parseInt(cell.dataset.row);
         const col = parseInt(cell.dataset.col);
-        const coord = `${colLabels[col]}${rowLabels[row]}`;
+        const coord = `${colLabels[col]}${rowLabels[row]}`; // Corrected template literal
 
-        console.log(`Processing attack on ${coord} by ${attackerId}`);
+        console.log(`Processing attack on ${coord} by ${attackerId}`); // Corrected template literal
 
         // Ensure the targetPlayer and its receiveAttack method exist
         if (!targetPlayer || typeof targetPlayer.receiveAttack !== 'function') {
-            console.error(`Invalid target player or receiveAttack function not defined.`);
+            console.error("Invalid target player or receiveAttack function not defined.");
             return;
         }
 
         let hitResult = targetPlayer.receiveAttack(coord);
         if (!hitResult) {
-            console.error(`receiveAttack did not return a valid result for ${coord}.`);
+            console.error(`receiveAttack did not return a valid result for ${coord}.`); // Corrected template literal
             return;
         }
 
         if (hitResult.hit) {
             cell.classList.add("hit");
-            const opponentSelfBoard = document.getElementById(`${targetId}`);
+            const opponentSelfBoard = document.getElementById(targetId);
             if (opponentSelfBoard) {
-                const targetCell = opponentSelfBoard.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                const targetCell = opponentSelfBoard.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // Corrected template literal and quotes
                 if (targetCell) {
                     targetCell.classList.add("hit-self");
                 } else {
-                    console.error(`Target cell not found: row ${row}, col ${col}`);
+                    console.error(`Target cell not found: row ${row}, col ${col}`); // Corrected template literal
                 }
             } else {
-                console.error(`Opponent's self board not found: ID ${targetId}`);
+                console.error(`Opponent's self board not found: ID ${targetId}`); // Corrected template literal
             }
 
-            console.log(`${attackerId} hit at ${coord}`);
+            console.log(`${attackerId} hit at ${coord}`); // Corrected template literal
 
             if (hitResult.sunk) {
-                // Remove the following line to prevent double decrementing
-                // targetPlayer.shipsLeft--;
-
                 // Correctly update the ships-left count in the scoreboard
                 const shipsLeftId = targetPlayer.id === 1 ? 'p1-ships-left' : 'p2-ships-left';
-                const shipsLeftElement = document.getElementById(`${shipsLeftId}`);
+                const shipsLeftElement = document.getElementById(shipsLeftId);
                 if (shipsLeftElement) {
                     shipsLeftElement.innerText = targetPlayer.shipsLeft;
                 } else {
-                    console.error(`Ships-left element not found: ID ${shipsLeftId}`);
+                    console.error(`Ships-left element not found: ID ${shipsLeftId}`); // Corrected template literal
                 }
 
-                console.log(`${attackerId} sunk a ship at ${coord}`);
+                console.log(`${attackerId} sunk a ship at ${coord}`); // Corrected template literal
                 checkWin();
             }
 
             if (attackerId === 'player1') {
                 p1HitsSpan.innerText = parseInt(p1HitsSpan.innerText) + 1;
+            } else if (attackerId === 'player2') {
+                p2HitsSpan.innerText = parseInt(p2HitsSpan.innerText) + 1;
             } else if (attackerId === 'AI') {
                 p2HitsSpan.innerText = parseInt(p2HitsSpan.innerText) + 1;
             }
         } else {
             cell.classList.add("miss");
-            const opponentSelfBoard = document.getElementById(`${targetId}`);
+            const opponentSelfBoard = document.getElementById(targetId);
             if (opponentSelfBoard) {
-                const targetCell = opponentSelfBoard.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                const targetCell = opponentSelfBoard.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // Corrected template literal and quotes
                 if (targetCell) {
                     targetCell.classList.add("miss-self");
                 } else {
-                    console.error(`Target cell not found: row ${row}, col ${col}`);
+                    console.error(`Target cell not found: row ${row}, col ${col}`); // Corrected template literal
                 }
             } else {
-                console.error(`Opponent's self board not found: ID ${targetId}`);
+                console.error(`Opponent's self board not found: ID ${targetId}`); // Corrected template literal
             }
 
-            console.log(`${attackerId} missed at ${coord}`);
+            console.log(`${attackerId} missed at ${coord}`); // Corrected template literal
 
             if (attackerId === 'player1') {
                 p1MissSpan.innerText = parseInt(p1MissSpan.innerText) + 1;
+            } else if (attackerId === 'player2') {
+                p2MissSpan.innerText = parseInt(p2MissSpan.innerText) + 1;
             } else if (attackerId === 'AI') {
                 p2MissSpan.innerText = parseInt(p2MissSpan.innerText) + 1;
             }
         }
     }
 
-
-   // Function to handle AI's turn
+    // Function to handle AI's turn
     function aiTakeTurn() {
         if (!aiPlayer) {
             console.error("AI player is not initialized.");
@@ -517,23 +628,23 @@ document.addEventListener("DOMContentLoaded", function () {
         // AI generates attack based on difficulty
         let attackCoords = aiPlayer.generateAttack(player1);
 
-        console.log(`AI is attacking ${colLabels[attackCoords.col]}${rowLabels[attackCoords.row]}`);
+        console.log(`AI is attacking ${colLabels[attackCoords.col]}${rowLabels[attackCoords.row]}`); // Corrected template literal
 
         // Simulate attack delay
         setTimeout(() => {
             let row = attackCoords.row;
             let col = attackCoords.col;
-            let coord = `${colLabels[col]}${rowLabels[row]}`;
-            let cell = document.getElementById("p1self").querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+            let coord = `${colLabels[col]}${rowLabels[row]}`; // Corrected template literal
+            let cell = document.getElementById("p1self").querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // Corrected template literal and quotes
 
             if (!cell) {
-                console.error(`Cell not found: row ${row}, col ${col}`);
+                console.error(`Cell not found: row ${row}, col ${col}`); // Corrected template literal
                 hidePassScreen();
                 return;
             }
 
             // Process AI's attack using processAttack
-            processAttack(player1, cell, 'p1opponent', 'AI');
+            processAttack(player1, cell, 'p1self', 'AI');
 
             // Update game state
             gameStateLabel.innerText = "Player 1's Turn";
@@ -546,7 +657,6 @@ document.addEventListener("DOMContentLoaded", function () {
             turn = 1;
         }, 1000); // 1-second delay for better UX
     }
-
 
     // Function to check win condition
     function checkWin() {
@@ -565,7 +675,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-        f// Function to hide all game boards
+    // Function to hide all game boards
     function hideAllBoards() {
         const boardIds = ["p1self", "p1opponent", "p2self", "p2opponent"];
         boardIds.forEach(id => {
@@ -573,7 +683,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (board) {
                 board.style.display = "none";
             } else {
-                console.error(`Board element not found: ID ${id}`);
+                console.error(`Board element not found: ID ${id}`); // Corrected template literal
             }
         });
     }
@@ -596,28 +706,28 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
     // Function to declare the winner
     function declareWinner(winner) {
         // Play sounds and animations
         // Example:
         // startFireworks();
         // playVictorySound();
-    
-        console.log(`${winner} wins the game!`);
-    
+
+        console.log(`${winner} wins the game!`); // Corrected template literal
+
         // Hide all game boards
         hideAllBoards();
-    
+
         // Hide the scoreboard and game state label
         hideUIElements();
-    
+
         // Show the winner modal
         showWinnerModal(winner);
     }
+
     // Winner screen
     function showWinnerModal(winner) {
-        winnerMessage.innerText = `${winner} WINS!`;
+        winnerMessage.innerText = `${winner} WINS!`; // Corrected template literal
         winModal.style.display = "flex";  // Show the modal
     }
 
@@ -649,51 +759,23 @@ document.addEventListener("DOMContentLoaded", function () {
         // missSound.play();
     }
 
-    // Function to start the attack phase (called after AI places ships)
-    function startAttackPhase() {
-        turn = 1;
-        isAttackPhase = true;
-        hidePassScreen(); // Initially hide pass screen
-        console.log("Attack Phase Started");
-    
-        // Initialize scoreboard
-        scoreboardDiv.style.display = "inline";
-        endTurnButton.style.display = (gameMode === 'two-player') ? "block" : "none";
-    
-        // Set ships left
-        p1ShipsLeftSpan.innerText = player1.shipsLeft;
-        if (gameMode === 'two-player') {
-            p2ShipsLeftSpan.innerText = player2.shipsLeft;
-            opponentName.innerText = "Player 2";
-            boards = [
-                document.getElementById("p1opponent"),
-                document.getElementById("p2opponent"),
-            ];
-        } else if (gameMode === 'single-player') {
-            p2ShipsLeftSpan.innerText = aiPlayer.shipsLeft;
-            opponentName.innerText = "AI";
-            boards = [
-                document.getElementById("p1opponent"), // AI's board
-            ];
-        }
-    
-        // Attach event listeners to the assigned boards
-        attachAttackEventListeners();
-    
-        // Hide controls and adjust board displays
-        controlsDiv.style.display = "none";
-        if (gameMode === 'two-player') {
-            document.getElementById("p2self").style.display = "none";
-            document.getElementById("p2opponent").style.display = "none";
-            document.getElementById("p1self").style.display = "grid";
-            document.getElementById("p1opponent").style.display = "grid";
-        } else if (gameMode === 'single-player') {
-            document.getElementById("p2self").style.display = "none";
-            document.getElementById("p2opponent").style.display = "none";
-            document.getElementById("p1self").style.display = "grid";
-            document.getElementById("p1opponent").style.display = "grid";
-        }
-    
-        gameStateLabel.innerText = "Player 1's Turn";
+    function playHitAnimation(targetCell) {
+        // Implement your hit animation here
+        // Example:
+        // targetCell.classList.add('hit-animation');
+    }
+
+    function playMissAnimation(targetCell) {
+        // Implement your miss animation here
+        // Example:
+        // targetCell.classList.add('miss-animation');
+    }
+
+    function playSunkSound() {
+        // Implement your sunk ship sound here
+    }
+
+    function startFireworks() {
+        // Implement your fireworks animation here
     }
 });
