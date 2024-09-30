@@ -6,7 +6,7 @@ This is a Battleship game built using Flask, JavaScript, and CSS. It features tw
 ## Installation Instructions
 
 1. **Download the Package**:  
-   First, download the project package and `cd` into the directory.
+   First, download the project package and `cd` into the team11_project1 directory.
 
 2. **Install Conda**:  
    Install [Conda](https://docs.conda.io/en/latest/miniconda.html) on your machine if it's not already installed.
