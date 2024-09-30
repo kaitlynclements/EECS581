@@ -1,3 +1,7 @@
+<!--
+Other Sources: ChatGPT
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +19,7 @@
         <div class="middle-section">
             <div class="game-state-label" id="game-state"><h3>Battleship</h3></div>
             
-            <!-- Mode Selection Prompt -->
+            <!-- Game state, controls, and Mode Selection Prompt -->
             <div id="mode-selection">
                 <button id="one-player">One Player</button>
                 <button id="two-player">Two Player</button>
@@ -36,6 +40,7 @@
             
             <!-- Game Controls for Ship Placement -->
             <div id="controls" style="display: none;">
+
                 <!-- Ship size selection -->
                 <label id="ship-length-label" for="ship-length">Choose Number of Ships:</label>
                 <select id="ship-length">
@@ -45,18 +50,23 @@
                     <option value="4">4: 1x1, 1x2, 1x3, 1x4</option>
                     <option value="5">5: 1x1, 1x2, 1x3, 1x4, 1x5</option>
                 </select>
+
+                <!-- Status message for ship placement -->
                 <p id="ship-placement-status"></p>
                 <button id="shipConfirm">Confirm</button>
                 <br><br>
+
                 <!-- Controls for coordinate and direction -->
                 <label for="start-coord" id="start-coord-label" style="display: none;">Starting Coordinate:</label>
                 <input type="text" id="start-coord" placeholder="A1" style="display: none;">
                 <br><br>
+                <!--Dropdown for choosing ship direction-->
                 <label for="direction" id="direction-label" style="display: none;">Direction:</label>
                 <select id="direction" style="display: none;">
                     <option value="horizontal">Horizontal</option>
                     <option value="vertical">Vertical</option>
                 </select>
+
                 <!-- Buttons for placing ships and ending ship placement -->
                 <br><br>
                 <button id="place-ship" style="display: none;">Place Ship</button>
@@ -64,7 +74,7 @@
                 <button id="start-game" style="display: none;" disabled>Start Attack Phase</button>
             </div>
             
-            <!-- Scoreboard to Show Hits/Misses and Remaining Ships -->
+            <!-- Scoreboard to Show Hits/Misses and Remaining Ships, user stats -->
             <div id="scoreboard" style="display: none;">
                 <h3>Player 1</h3>
                 <p>Hits: <span id="p1-hits">0</span></p>
@@ -83,10 +93,10 @@
             
             <!-- Winner Screens for Each Player -->
             <div id="p1-winner-screen" style="display: none;">
-                <button id="play-again-button-1">Play Again</button>
+                <button id="play-again-button-1">Play Again</button> <!-- Player 1 winner screen-->
             </div>
             <div id="p2-winner-screen" style="display: none;">
-                <button id="play-again-button-2">Play Again</button>
+                <button id="play-again-button-2">Play Again</button> <!-- Player 2 winner screen -->
             </div>
         </div>
 
@@ -101,7 +111,7 @@
         </div>
     </div>
     
-    <!-- Game-Over Screen -->
+    <!-- Game-Over Screen, Displays winner -->
     <div id="win-modal" class="modal">
         <div class="modal-content">
             <span id="winner-message"></span>
