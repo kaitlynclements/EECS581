@@ -1,25 +1,21 @@
 /**
- * NAME: Battleship - EECS581 Project 1 - turnSystem
- * DESCRIPTION: This program controls switching turns in the game of battleship
- * INPUT: None
- * OUTPUT: changes UI to reflect a change in player's turn and switches game state to player's turn
- * SOURCES: None
- * AUTHORS: Ryan Strong
- * DATE: 9/11/24
+ * NAME: TurnSystem.js 
+ * DESCRIPTION: This program controls switching turns in the game of battleship with the additon of AI special shot
+ * SOURCES: chatgpt 
  */
 
-let turn = 1; //int to track which player's turn it is - alternates between 1 and 2
+let turn = 1; //integer used to track what players turn it is
 let p1 = new Player(1)  //Player with id 1
 let p2 = new Player(2) //Player with id 2
 
-//switches turn to the next player
-function nextTurn() {
+
+function nextTurn() { //function switching to the next player
     if(turn == 1) {//change to p2's turn
         turn = 2;//turn tracker now shows p2
         document.getElementById("p1self").style.display = "none";//hide p1's boards
         document.getElementById("p1opponent").style.display = "none";
 
-        document.getElementById("p2self").style.display = "grid";//unhide p2's boards
+        document.getElementById("p2self").style.display = "grid";//reveal p2's boards
         document.getElementById("p2opponent").style.display = "grid";
 
         document.getElementById("game-state").innerText = "Player 2's Turn";//top of page now says it's p2's turn
