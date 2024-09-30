@@ -1,3 +1,10 @@
+<!--
+ * NAME: index.htnl
+ * DESCRIPTION: Handles displaying the battleship game on the webpage
+ * SOURCES: chatgpt 
+ * AUTHORS: Kaitlyn Clements, Taylor Slade, Sam Muehlebach, Lizzie Soltis, Aaditi Chinawalkar
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,13 +22,13 @@
         <div class="middle-section">
             <div class="game-state-label" id="game-state"><h3>Battleship</h3></div>
             
-            <!-- Mode Selection Prompt -->
+            <!-- Displays player selection -->
             <div id="mode-selection">
                 <button id="one-player">One Player</button>
                 <button id="two-player">Two Player</button>
             </div>
             
-            <!-- AI Difficulty Selection (Initially Hidden) -->
+            <!-- Displays AI difficulty if One player is chosen -->
             <div id="ai-difficulty" style="display: none;">
                 <h3>Select AI Difficulty</h3>
                 <button class="difficulty" data-level="easy">Easy</button>
@@ -29,7 +36,7 @@
                 <button class="difficulty" data-level="hard">Hard</button>
             </div>
             
-            <!-- Start Game Prompt (Initially Hidden) -->
+            <!-- Displays start game button -->
             <div id="start-game-prompt" style="display: none;">
                 <button id="start-game-button">Start Game</button>
             </div>
@@ -90,18 +97,18 @@
             </div>
         </div>
 
-        <!-- Opponent Boards for Each Player -->
+        <!-- Displays Opponent Boards for Each Player -->
         <div class="board op" id="p1opponent"></div>
         <div class="board op" id="p2opponent" style="display: none;"></div>
         
-        <!-- Pass Screen -->
+        <!-- Displays Pass Screen -->
         <div id='pass-screen' style='display: none;'>
             <h2></h2>
             <button id='pass'>Pass</button>
         </div>
     </div>
     
-    <!-- Game-Over Screen -->
+    <!-- Displays Game-Over Screen -->
     <div id="win-modal" class="modal">
         <div class="modal-content">
             <span id="winner-message"></span>
