@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Named function for handling attack clicks
+    // function for handling attack clicks on cells
     function handleAttackClick(event) {
         if (!isAttackPhase || hasFired) {
             console.log("Attack phase not active or already fired.");
@@ -117,21 +117,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Event Listeners for Mode Selection
-    onePlayerButton.addEventListener('click', function () {
+    onePlayerButton.addEventListener('click', function () { //if one player mode is selected
         gameMode = 'single-player';
         modeSelectionDiv.style.display = 'none';
         aiDifficultyDiv.style.display = 'block';
         console.log("Selected One Player Mode");
     });
 
-    twoPlayerButton.addEventListener('click', function () {
+    twoPlayerButton.addEventListener('click', function () { //if two player mode is selected
         gameMode = 'two-player';
         modeSelectionDiv.style.display = 'none';
         startGamePrompt.style.display = 'block';
         console.log("Selected Two Player Mode");
     });
 
-    // Event Listeners for AI Difficulty Selection
+    // Event Listeners for AI difficulty selection
     difficultyButtons.forEach(button => {
         button.addEventListener('click', function () {
             aiDifficulty = this.getAttribute('data-level');
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Event Listener to start the game after mode selection
+    // Event listener to start the game after mode selection
     startGameButton.addEventListener("click", function () {
         startGamePrompt.style.display = 'none';
         controlsDiv.style.display = 'block';
@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     startAttackButton.disabled = false;
                 }
             } else if (gameMode === 'single-player') {
-                // AI places ships automatically and start attack phase
+                // AI will place ships automatically and thens attack phase starts
                 aiPlayer = new AIPlayer(2, aiDifficulty);
                 aiPlayer.placeShipsRandomly(shipsToPlace);
                 console.log("AI has placed its ships");
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log(`Attempting to place ship of size ${shipLength} at ${startCoord} facing ${direction}`); // Corrected template literal
 
-        // Validate coordinate input
+        // Validate coordinate input (ensures it is between A-J and 1-10 and formatted correctly)
         const regex = /^([A-J])(10|[1-9])$/;
         if (!regex.test(startCoord)) {
             alert("Invalid coordinate format. Please enter a letter (A-J) followed by a number (1-10).");
@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const col = colLabels.indexOf(colLetter);
         const row = parseInt(rowStr) - 1;
 
-        // Check if the ship fits within the grid
+        // Check if the ship fits within the grid, if they do not it sends an alert to the console that placement is invalid
         if (!canPlaceShip(row, col, shipLength, direction)) {
             alert("Ship cannot be placed at this location.");
             console.log("Ship cannot be placed at this location");
