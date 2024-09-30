@@ -1,4 +1,5 @@
 // player.js
+// sources: chatgpt
 
 class Player { //class representing each player
     constructor(id) {
