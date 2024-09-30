@@ -1,5 +1,15 @@
 // player.js
-// sources: chatgpt
+/**
+ * NAME: Battleship - EECS581 Project 2 - player.js
+ * DESCRIPTION: Defines the Player and Ship classes, handling player actions,
+ *              ship placement, and attack responses for the battleship game.
+ * INPUT: Parameters for player actions and attack coordinates.
+ * OUTPUT: N/A
+ * SOURCES: ChatGPT
+ * AUTHORS: Chris Harvey, Sam Muehlebach, Kaitlyn Clements, Lizzie Soltis,
+ *          Taylor Slade, Aaditi Chinawalkar
+ * DATE CREATED: 9/13/24
+ */
 
 class Player { //class representing each player
     constructor(id) {
