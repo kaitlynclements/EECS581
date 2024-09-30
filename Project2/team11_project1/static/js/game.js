@@ -5,12 +5,13 @@
  * DESCRIPTION: Main game logic file for handling the two-player and single-player modes,
  *              including attack phases, ship placement, and special shot handling.
  * INPUT: Parameters for various functions and user interactions from the DOM.
- * OUTPUT: N/A
+ * OUTPUT: Console log messages, updates to DOM elements, and user alerts/prompts.
  * SOURCES: ChatGPT
  * AUTHORS: Chris Harvey, Sam Muehlebach, Kaitlyn Clements, Lizzie Soltis,
  *          Taylor Slade, Aaditi Chinawalkar
  * DATE CREATED: 9/13/24
  */
+
 document.addEventListener("DOMContentLoaded", function () {
     // Define column and row labels
     const colLabels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
