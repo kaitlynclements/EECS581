@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let player2 = new Player(2); // For two-player mode
 
     // Initialize special shot usage flags
-    player1.specialShotUsed = false;
-    player2.specialShotUsed = false;
+    player1.specialShotUsed = false; //when true, special shot is not available and has already been used
+    player2.specialShotUsed = false; //when false, special shot should be available for use
 
     // Ship placement variables
     let numShips = 0;
