@@ -1,5 +1,5 @@
 /**
- * NAME: Battleship - EECS581 Project 1 - aiPlayer.js
+ * NAME: Battleship - EECS581 Project 2 - aiPlayer.js
  * DESCRIPTION: File that defines the AIPlayer class, an extension of the Player class.
  * Handles the AI behavior in the one player mode of the battleship game
  * INPUT: Parameters for various functions
