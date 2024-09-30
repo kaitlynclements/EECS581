@@ -395,7 +395,7 @@ document.addEventListener("DOMContentLoaded", function () {
         startAttackPhase();
     });
 
-    // Function to start the attack phase
+    // Function that starts the attack phase
     function startAttackPhase() {
         turn = 1;
         isAttackPhase = true;
@@ -489,7 +489,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Assign boards array to p1opponent (Player 2 attacks Player 1's board)
                 boards = [document.getElementById("p1opponent")];
 
-                // Ensure interactivity
+                // Ensures interactivity
                 enableBoardInteractivity(document.getElementById("p1opponent"));
                 disableBoardInteractivity(document.getElementById("p2self"));
             } else {
@@ -517,7 +517,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Re-attach event listeners to the active opponent's board
             attachAttackEventListeners();
 
-            // Update the Special Shot button's state
+            // Update the Special Shot button's state (if used, sets usage state = true)
             updateSpecialShotButton();
         } else if (gameMode === 'single-player') {
             if (turn === 1) {
@@ -535,12 +535,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("Player's Turn");
             }
 
-            // Update the Special Shot button's state
+            // Update the Special Shot button's state (updates usage state to true if it was used)
             updateSpecialShotButton();
         }
     }
 
-    // Function to show the pass screen with a message
+    // Function that shows the pass screen with a message
     function showPassScreen(message) {
         if (message) {
             passScreen.children[0].innerText = message;
@@ -548,7 +548,7 @@ document.addEventListener("DOMContentLoaded", function () {
         passScreen.style.display = 'flex';
     }
 
-    // Function to hide the pass screen
+    // Function that hides the pass screen
     function hidePassScreen() {
         passScreen.style.display = 'none';
     }
@@ -588,7 +588,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             console.log(`${attackerId} hit at ${coord}`); // Corrected template literal
-
+            //if the ship is sunk, the following block updates the ship count and handles aftermath
             if (hitResult.sunk) {
                 // Correctly update the ships-left count in the scoreboard
                 const shipsLeftId = targetPlayer.id === 1 ? 'p1-ships-left' : 'p2-ships-left';
@@ -645,7 +645,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // AI generates attack based on difficulty
-        let attackCoords = aiPlayer.generateAttack(player1);
+        let attackCoords = aiPlayer.generateAttack(player1); //strategies differently based on difficulty
 
         console.log(`AI is attacking ${colLabels[attackCoords.col]}${rowLabels[attackCoords.row]}`); // Corrected template literal
 
