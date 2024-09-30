@@ -1,12 +1,72 @@
-/**
- * NAME: Battleship - EECS581 Project 1 - player.js
- * DESCRIPTION: This is a class file for Ships and Players
- * INPUT: input for constructors - player id and ship length and coordinates
- * OUTPUT: none
- * SOURCES: None
- * AUTHORS: Chris Harvey
- * DATE: 9/15/24
- */
+// player.js
+
+class Player {
+    constructor(id) {
+        this.id = id;
+        this.ships = []; // Array to store ships
+        this.shipsLeft = 0;
+        this.board = Array.from({ length: 10 }, () => Array(10).fill(0)); // 10x10 grid initialized to 0
+    }
+
+    // Method to add a ship to the player's fleet
+    addShip(length, coordinates) {
+        this.ships.push({ length, coordinates });
+        this.shipsLeft++;
+
+        // Mark the ship's position on the board
+        coordinates.forEach(coord => {
+            const colLetter = coord.match(/[A-J]/i)[0].toUpperCase();
+            const rowStr = coord.match(/\d+/)[0];
+            const col = colLetter.charCodeAt(0) - 65; // Convert 'A'-'J' to 0-9
+            const row = parseInt(rowStr) - 1; // Convert '1'-'10' to 0-9
+            this.board[row][col] = 1; // 1 represents a ship segment
+        });
+    }
+
+    // Method to receive an attack
+    receiveAttack(coord) {
+        // Assuming coord is in format 'A1', 'B5', etc.
+        const colLetter = coord.match(/[A-J]/i)[0].toUpperCase();
+        const rowStr = coord.match(/\d+/)[0];
+        const col = colLetter.charCodeAt(0) - 65; // Convert 'A'-'J' to 0-9
+        const row = parseInt(rowStr) - 1; // Convert '1'-'10' to 0-9
+
+        if (this.board[row][col] === 1) {
+            // Hit
+            this.board[row][col] = 2; // 2 represents a hit
+            let sunk = false;
+
+            // Check if the ship is sunk
+            this.ships.forEach(ship => {
+                if (ship.coordinates.includes(coord)) {
+                    const allHit = ship.coordinates.every(c => {
+                        const cCol = c.match(/[A-J]/i)[0].toUpperCase().charCodeAt(0) - 65;
+                        const cRow = parseInt(c.match(/\d+/)[0]) - 1;
+                        return this.board[cRow][cCol] === 2;
+                    });
+                    if (allHit) {
+                        sunk = true;
+                        this.shipsLeft--;
+                        console.log(`Ship of size ${ship.length} sunk at ${coord}!`);
+                    }
+                }
+            });
+
+            return { hit: true, sunk };
+        } else if (this.board[row][col] === 0) {
+            // Miss
+            this.board[row][col] = -1; // -1 represents a miss
+            return { hit: false, sunk: false };
+        } else {
+            // Already attacked this cell
+            console.log(`Already attacked ${coord}.`);
+            return { hit: false, sunk: false };
+        }
+    }
+
+    // Other player-related methods...
+}
+
 class Ship {
     constructor(length, coordinates) {
         this.length = length;
@@ -27,30 +87,5 @@ class Ship {
             return { hit: true, sunk: this.sunk }; // Return both hit status and sunk status
         }
         return { hit: false, sunk: false }; // Not a hit, return false
-    }
-}
-
-
-
-class Player {
-    constructor(id) {
-        this.id = id;
-        this.ships = [];
-        this.shipsLeft = 0;
-    }
-
-    addShip(length, coordinates) {
-        const ship = new Ship(length, coordinates); // Pass the coordinates to the Ship constructor
-        this.ships.push(ship);
-        this.shipsLeft++;
-    }
-
-    recordHit(shipIndex) {
-        const sunk = this.ships[shipIndex].hit();
-        if (sunk) {
-            this.shipsLeft--;
-            return true; // Ship was sunk
-        }
-        return false; // Ship was hit but not sunk
     }
 }

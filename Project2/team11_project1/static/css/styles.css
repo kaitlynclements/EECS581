@@ -214,3 +214,33 @@ body {
     height: 100vh;
     z-index: 9999;
 }
+
+/* Existing styles remain unchanged */
+
+/* Mode Selection Styles */
+#mode-selection, #ai-difficulty {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#mode-selection button, .difficulty {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#mode-selection button:hover, .difficulty:hover {
+    background-color: #45a049;
+}
+
+#ai-difficulty h3 {
+    margin-bottom: 10px;
+}
+
+
