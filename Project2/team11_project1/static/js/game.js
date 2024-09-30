@@ -1,4 +1,5 @@
 // game.js
+// sources: chatgpt
 
 document.addEventListener("DOMContentLoaded", function () {
     // Define column and row labels
