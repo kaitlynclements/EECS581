@@ -2,6 +2,7 @@
  * NAME: TurnSystem.js 
  * DESCRIPTION: This program controls switching turns in the game of battleship with the additon of AI special shot
  * SOURCES: chatgpt 
+ * AUTHORS: Kaitlyn Clements, Taylor Slade, Sam Muehlebach, Lizzie Soltis, Aaditi Chinawalkar
  */
 
 let turn = 1; //integer used to track what players turn it is
