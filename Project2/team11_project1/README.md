@@ -44,6 +44,7 @@ Once the web app is running, the game can be accessed in your browser. Two playe
 - **`game.js`**: Handles the core game logic, including ship placement and turn-based attacks.
 - **`board.js`**: Responsible for setting up the game boards and managing ship placement.
 - **`Player.js`**: Manages player-specific actions, like placing ships and endgame verification
+- **`aiPlayer.js`**: Handles the AI behavior and functionality in the one player mode
 - **`turnSystem.js`**: Controls the turn-based system and switches between players.
 - **`styles.css`**: Contains all the CSS for the visual styling of the game.
 - sfx, animations, and fireworks are managed by js files of the same name.
