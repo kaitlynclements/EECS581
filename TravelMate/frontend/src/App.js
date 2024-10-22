@@ -1,3 +1,10 @@
+/*
+Author: Kaitlyn Clements
+Date: 10/21/2024
+Other Sources: Chat GPT
+Description: The main React component that acts as the base for other components
+*/
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Register from './components/Register';
