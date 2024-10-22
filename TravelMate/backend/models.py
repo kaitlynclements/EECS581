@@ -5,11 +5,18 @@ Other Sources: Chat GPT
 Description: Contains database models for user registration and trip management using SQLAlchemy
 """
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, sessionmaker
 
 Base = declarative_base()
+
+# SQLite Database URL
+DATABASE_URL = "sqlite:///./travelmate.db"
+
+# Database Engine and Session
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 class User(Base):
     __tablename__ = 'users'
@@ -26,3 +33,4 @@ class Trip(Base):
     end_date = Column(Date, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship('User', back_populates='trips')
+
