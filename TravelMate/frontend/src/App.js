@@ -9,16 +9,19 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Register from './components/Register';
 import Login from './components/Login';
-import TripList from './components/TripList';
+import TripManager from './components/TripManager';
 
 function App() {
   return (
     <Router>
-      <Switch>
-        <Route path="/register" component={Register} />
-        <Route path="/login" component={Login} />
-        <Route path="/trips" component={TripList} />
-      </Switch>
+      <div>
+        <h1>TravelMate</h1>
+        <Switch>
+          <Route path="/register" component={Register} />
+          <Route path="/login" component={Login} />
+          <Route path="/trips" component={TripManager} />
+        </Switch>
+      </div>
     </Router>
   );
 }

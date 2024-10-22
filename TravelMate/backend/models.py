@@ -23,6 +23,9 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
+    
+    # Add the relationship to trips
+    trips = relationship("Trip", back_populates="user")
 
 class Trip(Base):
     __tablename__ = 'trips'
@@ -31,6 +34,7 @@ class Trip(Base):
     destination = Column(String, nullable=False)
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship('User', back_populates='trips')
-
+    user_id = Column(Integer, ForeignKey('users.id'))  # Foreign key to User model
+    
+    # Add the relationship to the user
+    user = relationship("User", back_populates="trips")

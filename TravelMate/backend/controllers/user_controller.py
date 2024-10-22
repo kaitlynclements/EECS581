@@ -26,3 +26,17 @@ def register():
     db.add(new_user)
     db.commit()
     return jsonify({"message": "User registered successfully"}), 201
+
+@user_bp.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data['email']
+    password = data['password']
+    
+    db = SessionLocal()
+    user = db.query(User).filter(User.email == email).first()
+    
+    if not user or not bcrypt.verify(password, user.password):
+        return jsonify({"error": "Invalid credentials"}), 401
+    
+    return jsonify({"message": "Login successful"}), 200
