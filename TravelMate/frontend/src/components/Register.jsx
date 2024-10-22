@@ -1,3 +1,10 @@
+/*
+Author: Kaitlyn Clements
+Date: 10/21/2024
+Other Sources: Chat GPT
+Description: Handles user registration
+*/
+
 import React, { useState } from 'react';
 import api from '../services/api';
 
