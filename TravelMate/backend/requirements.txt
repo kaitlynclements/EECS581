@@ -1,3 +1,4 @@
-Flask
-SQLAlchemy
-passlib
+Flask==2.0.3
+SQLAlchemy==1.4.27
+passlib==1.7.4
+flask-cors==3.0.10
