@@ -1,5 +1,5 @@
 /*
-Author: Kaitlyn Clements
+Author: Kaitlyn Clements, Elizabeth Soltis
 Date: 10/21/2024
 Other Sources: Chat GPT
 Description: The main React component that acts as the base for other components
@@ -7,6 +7,7 @@ Description: The main React component that acts as the base for other components
 
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import './App.css';  // Import the CSS file
 import Register from './components/Register';
 import Login from './components/Login';
 import TripManager from './components/TripManager';
