@@ -1,3 +1,10 @@
+"""
+Author: Kaitlyn Clements
+Date: 10/21/2024
+Other Sources: Chat GPT
+Description: Defines routes for user registration and login
+"""
+
 from flask import Blueprint, request, jsonify
 from models import User, SessionLocal
 from passlib.hash import bcrypt
