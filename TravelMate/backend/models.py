@@ -1,3 +1,10 @@
+"""
+Author: Kaitlyn Clements
+Date: 10/21/2024
+Other Sources: Chat GPT
+Description: Contains database models for user registration and trip management using SQLAlchemy
+"""
+
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
