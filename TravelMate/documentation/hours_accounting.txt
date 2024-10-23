@@ -9,6 +9,7 @@ Sam Muehlebach:
 
   Elizabeth Sotlis:
   10/22 - 1.5 hrs: setting up project and adding front end
-
+  10/23 - 1.5 hrs: adding react-router-dom, fixing navbar, and adding styling and .jsx files
+  Total: 3 hours
     
 Total hours: 8 hours
