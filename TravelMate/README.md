@@ -135,8 +135,11 @@ Install the required Node.js packages:
 ```bash
 npm install
 ```
-
-### Step 3: Start the React Development Server
+### Step 3: Install react-router-dom
+```bash
+npm install react-router-dom
+```
+### Step 4: Start the React Development Server
 Start the frontend development server:
 ```bash
 npm start
@@ -149,17 +152,17 @@ The React app will be running on `http://localhost:3000`.
 ## 3. Testing the Application
 
 ### Step 1: Register a New User
-1. Visit `http://localhost:3000/register` in your browser.
+1. Navigate from home to Register through Navigation bar or Visit `http://localhost:3000/register` in your browser.
 2. Fill in the email and password fields.
 3. Click **Register**.
 
 ### Step 2: Log In
-1. Visit `http://localhost:3000/login`.
+1. Navigate from home to Login through Navigation bar or Visit `http://localhost:3000/login`.
 2. Enter your registered email and password.
 3. Click **Login**.
 
 ### Step 3: Create and View Trips
-1. After logging in, visit `http://localhost:3000/trips`.
+1. After logging in, navigate to trips through Navigation bar or visit `http://localhost:3000/trips`.
 2. Fill in the trip name, destination, start date, and end date.
 3. Click **Create Trip**.
 4. The newly created trip should appear in the list of existing trips.
