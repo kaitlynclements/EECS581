@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../services/api';  // Import the API instance
+import api from '../services/api';
 import { useHistory } from 'react-router-dom';
 
 function Login() {
@@ -9,9 +9,11 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      await api.post('/login', { email, password });
+      const response = await api.post('/login', { email, password });
+      // Assuming the user ID is returned in the response (e.g., response.data.user_id)
+      localStorage.setItem('user_id', response.data.user_id);
       alert('Login successful!');
-      history.push('/trips');  // Redirect to trips page after login
+      history.push('/trips');
     } catch (error) {
       alert('Login failed. Please check your credentials.');
     }

@@ -16,10 +16,11 @@ function Register() {
 
   const handleRegister = async () => {
     try {
-      await api.post('/register', { email, password });
+      const response = await api.post('/register', { email, password });
       alert('Registration successful!');
       history.push('/login');  // Redirect to login page after registration
     } catch (error) {
+      console.error(error);  // Log the error for debugging
       alert('Registration failed.');
     }
   };

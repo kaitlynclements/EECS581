@@ -12,7 +12,7 @@ from controllers.trip_controller import trip_bp
 app = Flask(__name__)
 
 # Enable CORS for all routes
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 app.register_blueprint(user_bp)
 app.register_blueprint(trip_bp)
