@@ -2,7 +2,7 @@ Kaitlyn Clements:
   10/21- 4 hours: creating & organizing github, writing first initial layer for front-end, back-end, and database layers
   10/23 - 1 hour: trying to setup and run backend files
   10/27 - 2 hours: Debugging and running backend/front end, solving errors that were preventing from running
-  Total: 5 hours
+  Total: 7 hours
 
 Sam Muehlebach:
   10/22- 4 hours: Perfecting and debugging database and backend layers, initializing frontend with simple HTML file, and tying it to 
@@ -19,4 +19,4 @@ Taylor Slade:
   10/27 - 3 hours: implementing itinerary feature
   Total: 4 hours
     
-Total hours: 11 hours
+Total hours: 18 hours
