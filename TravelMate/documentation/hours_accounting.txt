@@ -18,5 +18,9 @@ Taylor Slade:
   10/24 - 1 hour: testing and setting up project
   10/27 - 4 hours: implementing itinerary feature
   Total: 5 hours
-    
-Total hours: 19 hours
+
+Aaditi Chinawalkar
+  10/24 - 1 hour: Testing backend functionality
+  10/27 - 1.5 hours: Testing and debugging backend and frontend errors revolving compilation
+  Total: 2.5 hours
+Total hours: 21.5 hours
