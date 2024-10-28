@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function TripManager() {
   const [trips, setTrips] = useState([]);

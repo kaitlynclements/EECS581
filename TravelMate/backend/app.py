@@ -9,6 +9,7 @@ from flask_cors import CORS
 from controllers.user_controller import user_bp
 from controllers.trip_controller import trip_bp
 
+
 app = Flask(__name__)
 
 # Enable CORS for all routes

@@ -11,6 +11,7 @@ import Navbar from './components/Navbar';
 import Login from './components/Login';
 import Register from './components/Register';
 import TripManager from './components/TripManager';
+import ItineraryManager from './components/ItineraryManager';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/trips" component={TripManager} />
+          <Route path="/create-itinerary" component={ItineraryManager} />
         </Switch>
       </div>
     </Router>
