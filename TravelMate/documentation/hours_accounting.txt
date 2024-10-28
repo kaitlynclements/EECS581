@@ -16,7 +16,7 @@ Sam Muehlebach:
 
 Taylor Slade:
   10/24 - 1 hour: testing and setting up project
-  10/27 - 3 hours: implementing itinerary feature
-  Total: 4 hours
+  10/27 - 4 hours: implementing itinerary feature
+  Total: 5 hours
     
-Total hours: 18 hours
+Total hours: 19 hours
