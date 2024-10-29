@@ -1,3 +1,5 @@
+SPRINT 1 HOURS: 
+
 Kaitlyn Clements: 
   10/21- 4 hours: creating & organizing github, writing first initial layer for front-end, back-end, and database layers
   10/23 - 1 hour: trying to setup and run backend files
