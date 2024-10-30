@@ -1,5 +1,6 @@
 Kaitlyn Clements: 
-  Total: 0 hours
+  10/29: 2 hours- Trying to implement a first&last name feature when registering, but having issues with databse and data sending to/from front end and backend
+    Total: 2 hours
     
 Taylor Slade: 
   Total: 0 hours
@@ -13,4 +14,4 @@ Lizzie Soltis:
 Aaditi Chinawalker: 
   Total: 0 hours
 
-Total Hours: 0
+Total Hours: 2
