@@ -14,6 +14,8 @@ user_bp = Blueprint('user_bp', __name__)
 @user_bp.route('/register', methods=['POST'])
 def register():
     data = request.json
+    first_name = data['first name']
+    last_name = data['last name']
     email = data['email']
     password = bcrypt.hash(data['password'])
     
@@ -22,7 +24,7 @@ def register():
     if existing_user:
         return jsonify({"error": "User already exists"}), 400
 
-    new_user = User(email=email, password=password)
+    new_user = User(first_name=first_name, last_name=last_name, email=email, password=password)
     db.add(new_user)
     db.commit()
     return jsonify({"message": "User registered successfully"}), 201
