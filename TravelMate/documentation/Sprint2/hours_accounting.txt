@@ -1,6 +1,7 @@
 Kaitlyn Clements: 
   10/29: 2 hours- Trying to implement a first&last name feature when registering, but having issues with databse and data sending to/from front end and backend
-    Total: 2 hours
+  10/30: 1 hour- Successfully implemented first & last name features to users that gets filled out when they register, and is saved to the database. 
+    Total: 3 hours
     
 Taylor Slade: 
   Total: 0 hours
