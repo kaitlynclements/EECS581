@@ -1,0 +1,19 @@
+Kaitlyn Clements: 
+  10/29: 2 hours- Trying to implement a first&last name feature when registering, but having issues with databse and data sending to/from front end and backend
+  10/30: 1 hour- Successfully implemented first & last name features to users that gets filled out when they register, and is saved to the database. 
+    Total: 3 hours
+    
+Taylor Slade: 
+  11/5: 1.5 hours testing and linking trips to specific user_ids, displaying trips only when user is logged in
+  Total: 1.5 hours
+    
+Sam Muelbach: 
+  Total: 0 hours
+    
+Lizzie Soltis: 
+  Total: 0 hours
+    
+Aaditi Chinawalker: 
+  Total: 0 hours
+
+Total Hours: 3.5

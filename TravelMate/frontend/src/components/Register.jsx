@@ -8,6 +8,8 @@ Description: Handles user registration
 import React, { useState } from 'react';
 import api from '../services/api';  // Import the API instance
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
+
 
 function Register() {
   const [first_name, setFirstName] = useState('');
@@ -24,10 +26,11 @@ function Register() {
           const response = await axios.post('http://127.0.0.1:5000/register', {
               first_name: first_name,
               last_name: last_name,
-              email,
-              password
+              email: email,
+              password: password
           });
-          console.log("Registration successful:", response.data);
+          console.log("Registration successful:", response.data.message);
+          alert(response.data.message);
           // Redirect or provide feedback to the user
       } catch (error) {
           if (error.response) {

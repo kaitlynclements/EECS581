@@ -14,8 +14,8 @@ user_bp = Blueprint('user_bp', __name__)
 @user_bp.route('/register', methods=['POST'])
 def register():
     data = request.json
-    first_name = data['first name']
-    last_name = data['last name']
+    first_name = data['first_name']
+    last_name = data['last_name']
     email = data['email']
     password = bcrypt.hash(data['password'])
     
