@@ -8,8 +8,9 @@ Taylor Slade:
   11/6: 1 hour fixing/debugging registration feature
   Total: 2 hours
     
-Sam Muelbach: 
-  Total: 0 hours
+Sam Muehlebach: 
+  11/7: 2.5 hours of implementing functionality for deleting trips and activities from the itinerary
+  Total: 2.5 hours
     
 Lizzie Soltis: 
   Total: 0 hours
