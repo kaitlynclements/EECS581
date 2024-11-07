@@ -6,7 +6,7 @@ Kaitlyn Clements:
 Taylor Slade: 
   11/5: 1 hour linking trips to specific user_ids, displaying trips only when user is logged in
   11/6: 1 hour fixing/debugging registration feature
-  Total: 0 hours
+  Total: 2 hours
     
 Sam Muelbach: 
   Total: 0 hours
