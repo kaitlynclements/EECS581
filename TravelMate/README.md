@@ -104,6 +104,12 @@ Install the necessary Python packages listed in `requirements.txt`:
 pip install -r requirements.txt
 ```
 
+### Step 4.0: 
+```
+pip install flask_sqlalchemy
+pip install bcrypt
+```
+
 ### Step 4: Initialize the Database
 Set up the SQLite database by running the `init_db.py` script:
 ```bash
