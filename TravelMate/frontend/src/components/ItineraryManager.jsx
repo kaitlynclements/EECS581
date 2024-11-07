@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const ItineraryManager = () => {
   const [trips, setTrips] = useState({});
@@ -47,6 +46,28 @@ const ItineraryManager = () => {
       alert('Please fill out all fields and provide a trip name');
     }
   };
+
+  // Delete an activity from a specific trip
+  const deleteActivity = (tripName, activityIndex) => {
+    if (window.confirm("Are you sure you want to delete this activity?")) {
+      setTrips((prevTrips) => {
+        const updatedActivities = prevTrips[tripName].filter((_, index) => index !== activityIndex);
+  
+        // If there are no remaining activities, remove the trip entry entirely
+        if (updatedActivities.length === 0) {
+          const { [tripName]: _, ...remainingTrips } = prevTrips;
+          return remainingTrips;
+        }
+  
+        // Otherwise, update the trip with the remaining activities
+        return {
+          ...prevTrips,
+          [tripName]: updatedActivities,
+        };
+      });
+    }
+  };
+  
 
   return (
     <div className="itinerary-manager">
@@ -113,6 +134,7 @@ const ItineraryManager = () => {
               {trips[tripName].map((activity, index) => (
                 <li key={index}>
                   <strong>{activity.name}</strong> - {activity.date} at {activity.time}, {activity.location}
+                  <button onClick={() => deleteActivity(tripName, index)}>Delete</button>
                 </li>
               ))}
             </ul>
@@ -126,5 +148,3 @@ const ItineraryManager = () => {
 };
 
 export default ItineraryManager;
-
-

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import { deleteTrip } from '../services/api';
 import { useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 function TripManager() {
   const [trips, setTrips] = useState([]);
@@ -11,18 +11,20 @@ function TripManager() {
   const [endDate, setEndDate] = useState('');
   const history = useHistory();
 
-  const userId = localStorage.getItem('user_id'); // Get user ID from local storage
+  const userId = localStorage.getItem('user_id');  // Retrieve user_id correctly from localStorage
 
   useEffect(() => {
     if (!userId) {
       alert("Please log in to view your trips");
       history.push('/login');
+    } else {
+      fetchUserTrips();  // Fetch trips if user is logged in
     }
   }, [userId, history]);
 
   const fetchUserTrips = async () => {
     try {
-      const response = await api.get(`/trips?user_id=${userId}`);  // Add user_id to fetch only their trips
+      const response = await api.get(`/trips?user_id=${userId}`);  // Correct URL to include user_id
       setTrips(response.data);
     } catch (error) {
       alert('Failed to load trips.');
@@ -36,18 +38,26 @@ function TripManager() {
         destination,
         start_date: startDate,
         end_date: endDate,
-        user_id: userId  // Send user_id to associate the trip
+        user_id: userId
       });
-      fetchUserTrips(); // Refresh trip list after creation
+      fetchUserTrips();  // Refresh trip list after creation
       alert('Trip created successfully!');
     } catch (error) {
       alert('Failed to create trip.');
     }
   };
 
-  useEffect(() => {
-    if (userId) fetchUserTrips();
-  }, [userId]);
+  const handleDeleteTrip = async (tripId) => {
+    if (window.confirm("Are you sure you want to delete this trip?")) {
+      try {
+        await deleteTrip(tripId);
+        alert("Trip deleted successfully");
+        fetchUserTrips();  // Refresh the list after deletion
+      } catch (error) {
+        alert("Failed to delete trip");
+      }
+    }
+  };
 
   return (
     <div>
@@ -69,6 +79,7 @@ function TripManager() {
           {trips.map(trip => (
             <li key={trip.id}>
               <strong>{trip.name}</strong> - {trip.destination} ({trip.start_date} to {trip.end_date})
+              <button onClick={() => handleDeleteTrip(trip.id)}>Delete</button>
             </li>
           ))}
         </ul>
