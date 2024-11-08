@@ -1,28 +1,23 @@
 from flask import Blueprint, request, jsonify
-from models import Trip, SessionLocal
+from models import db, Trip, Activity
 from datetime import datetime
-from models import db, Activity
 
 trip_bp = Blueprint('trip_bp', __name__)
 
 @trip_bp.route('/api/tripslist', methods=['GET'])
 def gettripslist():
-    session = SessionLocal()
-    try:
-        trips = session.query(Trip).all()
-        trip_list = [
-            {
-                "id": trip.id,
-                "name": trip.name,
-                "destination": trip.destination,
-                "start_date": trip.start_date.strftime('%Y-%m-%d'),
-                "end_date": trip.end_date.strftime('%Y-%m-%d')
-            }
-            for trip in trips
-        ]
-        return jsonify(trip_list)
-    finally:
-        session.close()
+    trips = Trip.query.all()
+    trip_list = [
+        {
+            "id": trip.id,
+            "name": trip.name,
+            "destination": trip.destination,
+            "start_date": trip.start_date.strftime('%Y-%m-%d'),
+            "end_date": trip.end_date.strftime('%Y-%m-%d')
+        }
+        for trip in trips
+    ]
+    return jsonify(trip_list)
 
 @trip_bp.route('/trips', methods=['GET'])
 def get_user_trips():
@@ -31,9 +26,7 @@ def get_user_trips():
     if not user_id:
         return jsonify({"error": "User must be logged in to view trips"}), 401
 
-    session = SessionLocal()
-    trips = session.query(Trip).filter_by(user_id=user_id).all()
-    session.close()
+    trips = Trip.query.filter_by(user_id=user_id).all()
 
     return jsonify([{
         'id': trip.id,
@@ -45,7 +38,6 @@ def get_user_trips():
 
 @trip_bp.route('/trips', methods=['POST'])
 def create_trip():
-    session = SessionLocal()
     user_id = request.json.get('user_id')
     start_date = datetime.strptime(request.json['start_date'], '%Y-%m-%d').date()
     end_date = datetime.strptime(request.json['end_date'], '%Y-%m-%d').date()
@@ -58,8 +50,8 @@ def create_trip():
         user_id=user_id
     )
 
-    session.add(new_trip)
-    session.commit()
+    db.session.add(new_trip)
+    db.session.commit()
     trip_data = {
         'id': new_trip.id,
         'name': new_trip.name,
@@ -69,7 +61,6 @@ def create_trip():
         'user_id': new_trip.user_id
     }
 
-    session.close()
     return jsonify(trip_data), 201
 
 @trip_bp.route('/trips/<int:trip_id>/itinerary', methods=['GET'])
@@ -109,7 +100,6 @@ def create_activity(trip_id):
 
 @trip_bp.route('/trips/<int:trip_id>/itinerary/activities/<int:activity_id>', methods=['DELETE'])
 def delete_activity(trip_id, activity_id):
-    # Make sure the activity belongs to the specified trip
     activity = Activity.query.filter_by(id=activity_id, trip_id=trip_id).first()
     if activity is None:
         return jsonify({'error': 'Activity not found or does not belong to the specified trip'}), 404
@@ -117,3 +107,13 @@ def delete_activity(trip_id, activity_id):
     db.session.delete(activity)
     db.session.commit()
     return jsonify({'message': 'Activity deleted successfully'}), 200
+
+@trip_bp.route('/trips/<int:trip_id>', methods=['DELETE'])
+def delete_trip(trip_id):
+    trip = Trip.query.get(trip_id)
+    if trip is None:
+        return jsonify({'error': 'Trip not found'}), 404
+
+    db.session.delete(trip)
+    db.session.commit()
+    return jsonify({'message': 'Trip deleted successfully'}), 200

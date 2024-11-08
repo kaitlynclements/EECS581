@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 const ItineraryManager = () => {
@@ -73,7 +74,7 @@ const ItineraryManager = () => {
     <div className="itinerary-manager">
       <h2>Create Itinerary</h2>
 
-      {/* Form to add a new activity */}
+    
       <form onSubmit={addActivity}>
         <div>
           <label>Trip Name:</label>
@@ -124,7 +125,7 @@ const ItineraryManager = () => {
         <button type="submit">Add Activity</button>
       </form>
 
-      {/* Display the list of activities grouped by trip */}
+    
       <h3>Planned Activities</h3>
       {Object.keys(trips).length > 0 ? (
         Object.keys(trips).map((tripName) => (
