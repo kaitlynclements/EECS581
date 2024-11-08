@@ -19,6 +19,7 @@ Lizzie Soltis:
   Total: 0 hours
     
 Aaditi Chinawalker: 
-  Total: 0 hours
+  11/7: 2.5 hours debugging trip deletion and attemmpting creation of activities database table
+  Total: 2.5 hours
 
 Total Hours: 11.5
