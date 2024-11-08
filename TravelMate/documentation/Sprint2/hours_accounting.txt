@@ -2,7 +2,7 @@ Kaitlyn Clements:
   10/29: 2 hours- Trying to implement a first&last name feature when registering, but having issues with databse and data sending to/from front end and backend
   10/30: 1 hour- Successfully implemented first & last name features to users that gets filled out when they register, and is saved to the database. 
 11/07: 2 hours- created activities database table, activity_controller.py, Updated ItineraryManager.jsx in frontend to handle tables, testing and debugging all the issues when I did this. 
-Trying to link specific individual itinerary objects to each individual trip object. *Note: I didn't upload these files to github since I haven't worked out all the kinks yet. 
+  Trying to link specific individual itinerary objects to each individual trip object. *Note: I didn't upload these files to github since I haven't worked out all the kinks yet. 
     Total: 5 hours
     
 Taylor Slade: 
@@ -21,4 +21,4 @@ Lizzie Soltis:
 Aaditi Chinawalker: 
   Total: 0 hours
 
-Total Hours: 2
+Total Hours: 11.5
