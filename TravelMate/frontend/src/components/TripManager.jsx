@@ -70,6 +70,18 @@ function TripManager() {
     }
   };
 
+  const handleDeleteActivity = async (tripId, activityId) => {
+    if (window.confirm("Are you sure you want to delete this activity?")) {
+      try {
+        await api.delete(`/trips/${tripId}/itinerary/activities/${activityId}`);
+        alert("Activity deleted successfully");
+        fetchActivities(tripId); // Refresh activities after deletion
+      } catch (error) {
+        alert("Failed to delete activity");
+      }
+    }
+  };
+
   return (
     <div>
       <h2>Manage Trips</h2>
@@ -96,11 +108,12 @@ function TripManager() {
                   {activities[trip.id].map(activity => (
                     <li key={activity.id}>
                       {activity.name} - {activity.date} at {activity.time}, {activity.location}
+                      <button onClick={() => handleDeleteActivity(trip.id, activity.id)}>Delete Activity</button>
                     </li>
                   ))}
                 </ul>
               )}
-              <button onClick={() => handleDeleteTrip(trip.id)}>Delete</button>
+              <button onClick={() => handleDeleteTrip(trip.id)}>Delete Trip</button>
             </li>
           ))}
         </ul>
