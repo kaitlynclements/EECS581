@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import api from '../services/api';
 
 const ItineraryManager = () => {
   const [trips, setTrips] = useState({});
@@ -11,7 +11,9 @@ const ItineraryManager = () => {
     location: '',
   });
 
-  // Handle input changes for activity fields
+  // Retrieve userId from localStorage
+  const userId = localStorage.getItem('user_id');
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setActivity((prevActivity) => ({
@@ -20,61 +22,57 @@ const ItineraryManager = () => {
     }));
   };
 
-  // Handle trip name input change
   const handleTripNameChange = (e) => {
     setTypedTripName(e.target.value);
   };
 
-  // Add a new activity to the selected or new trip
-  const addActivity = (e) => {
+  const addActivity = async (e) => {
     e.preventDefault();
     if (activity.name && activity.date && activity.time && activity.location && typedTripName) {
       const newActivity = { ...activity };
 
-      // Check if the trip already exists; if not, create a new entry
-      setTrips((prevTrips) => {
-        const existingActivities = prevTrips[typedTripName] || [];
-        return {
-          ...prevTrips,
-          [typedTripName]: [...existingActivities, newActivity],
-        };
-      });
+      try {
+        // Fetch trips to find the ID
+        const tripResponse = await api.get(`/trips?user_id=${userId}`);
+        const tripId = tripResponse.data.find(t => t.name === typedTripName).id;
 
-      // Reset form fields after adding
-      setActivity({ name: '', date: '', time: '', location: '' });
-      setTypedTripName('');
+        // Send the new activity to the backend
+        await api.post(`/trips/${tripId}/itinerary/activities`, newActivity);
+
+        // Update local state
+        setTrips((prevTrips) => {
+          const existingActivities = prevTrips[typedTripName] || [];
+          return {
+            ...prevTrips,
+            [typedTripName]: [...existingActivities, newActivity],
+          };
+        });
+
+        // Reset form fields after adding
+        setActivity({ name: '', date: '', time: '', location: '' });
+        setTypedTripName('');
+      } catch (error) {
+        alert('Failed to add activity: ' + error.message);
+      }
     } else {
       alert('Please fill out all fields and provide a trip name');
     }
   };
 
-  // Delete an activity from a specific trip
-  const deleteActivity = (tripName, activityIndex) => {
-    if (window.confirm("Are you sure you want to delete this activity?")) {
-      setTrips((prevTrips) => {
-        const updatedActivities = prevTrips[tripName].filter((_, index) => index !== activityIndex);
-  
-        // If there are no remaining activities, remove the trip entry entirely
-        if (updatedActivities.length === 0) {
-          const { [tripName]: _, ...remainingTrips } = prevTrips;
-          return remainingTrips;
-        }
-  
-        // Otherwise, update the trip with the remaining activities
-        return {
-          ...prevTrips,
-          [tripName]: updatedActivities,
-        };
-      });
+  // Function to fetch activities for a specific trip
+  const fetchActivities = async (tripId) => {
+    try {
+      const response = await api.get(`/trips/${tripId}/activities`);
+      setTrips(prev => ({ ...prev, [tripId]: response.data }));
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+      alert('Failed to load activities for this trip.');
     }
   };
-  
 
   return (
     <div className="itinerary-manager">
       <h2>Create Itinerary</h2>
-
-    
       <form onSubmit={addActivity}>
         <div>
           <label>Trip Name:</label>
@@ -125,7 +123,6 @@ const ItineraryManager = () => {
         <button type="submit">Add Activity</button>
       </form>
 
-    
       <h3>Planned Activities</h3>
       {Object.keys(trips).length > 0 ? (
         Object.keys(trips).map((tripName) => (
@@ -135,7 +132,6 @@ const ItineraryManager = () => {
               {trips[tripName].map((activity, index) => (
                 <li key={index}>
                   <strong>{activity.name}</strong> - {activity.date} at {activity.time}, {activity.location}
-                  <button onClick={() => deleteActivity(tripName, index)}>Delete</button>
                 </li>
               ))}
             </ul>
