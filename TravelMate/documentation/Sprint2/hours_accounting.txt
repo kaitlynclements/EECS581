@@ -18,10 +18,12 @@ Sam Muehlebach:
   Total: 2.5 hours
     
 Lizzie Soltis: 
-  Total: 0 hours
+  11/9: 2 hours testing add activity 
+  11/10: 4 hours implementing and debugging add/delete activity & trip management, linking trips & activities
+  Total: 6 hours
     
 Aaditi Chinawalker: 
   11/7: 2.5 hours debugging trip deletion and attemmpting creation of activities database table
   Total: 2.5 hours
 
-Total Hours: 15.5
+Total Hours: 21.5
