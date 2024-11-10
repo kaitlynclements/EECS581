@@ -117,3 +117,20 @@ def delete_trip(trip_id):
     db.session.delete(trip)
     db.session.commit()
     return jsonify({'message': 'Trip deleted successfully'}), 200
+
+@trip_bp.route('/trips/<int:trip_id>/activities', methods=['GET'])
+def get_trip_activities(trip_id):
+    activities = Activity.query.filter_by(trip_id=trip_id).all()
+    if not activities:
+        return jsonify({"message": "No activities found for this trip."}), 404
+
+    result = [
+        {
+            'id': activity.id,
+            'name': activity.name,
+            'date': activity.date.strftime('%Y-%m-%d'),
+            'time': activity.time.strftime('%H:%M'),
+            'location': activity.location
+        } for activity in activities
+    ]
+    return jsonify(result), 200
