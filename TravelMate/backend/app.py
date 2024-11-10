@@ -9,6 +9,7 @@ from flask_cors import CORS
 from models import db
 from controllers.user_controller import user_bp
 from controllers.trip_controller import trip_bp
+from controllers.activity_controller import activity_bp
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./travelmate.db'
@@ -23,6 +24,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 # Register Blueprints
 app.register_blueprint(user_bp)
 app.register_blueprint(trip_bp)
+app.register_blueprint(activity_bp)
 
 if __name__ == "__main__":
     with app.app_context():
