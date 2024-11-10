@@ -9,25 +9,36 @@ function TripManager() {
   const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [activities, setActivities] = useState({});
   const history = useHistory();
 
-  const userId = localStorage.getItem('user_id');  // Retrieve user_id correctly from localStorage
+  const userId = localStorage.getItem('user_id');
 
   useEffect(() => {
     if (!userId) {
       alert("Please log in to view your trips");
       history.push('/login');
     } else {
-      fetchUserTrips();  // Fetch trips if user is logged in
+      fetchUserTrips();
     }
   }, [userId, history]);
 
   const fetchUserTrips = async () => {
     try {
-      const response = await api.get(`/trips?user_id=${userId}`);  // Correct URL to include user_id
+      const response = await api.get(`/trips?user_id=${userId}`);
       setTrips(response.data);
     } catch (error) {
       alert('Failed to load trips.');
+    }
+  };
+
+  const fetchActivities = async (tripId) => {
+    try {
+      const response = await api.get(`/trips/${tripId}/activities`);
+      setActivities(prev => ({ ...prev, [tripId]: response.data }));
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+      alert('Failed to load activities for this trip.');
     }
   };
 
@@ -40,7 +51,7 @@ function TripManager() {
         end_date: endDate,
         user_id: userId
       });
-      fetchUserTrips();  // Refresh trip list after creation
+      fetchUserTrips();
       alert('Trip created successfully!');
     } catch (error) {
       alert('Failed to create trip.');
@@ -52,7 +63,7 @@ function TripManager() {
       try {
         await deleteTrip(tripId);
         alert("Trip deleted successfully");
-        fetchUserTrips();  // Refresh the list after deletion
+        fetchUserTrips();
       } catch (error) {
         alert("Failed to delete trip");
       }
@@ -79,6 +90,16 @@ function TripManager() {
           {trips.map(trip => (
             <li key={trip.id}>
               <strong>{trip.name}</strong> - {trip.destination} ({trip.start_date} to {trip.end_date})
+              <button onClick={() => fetchActivities(trip.id)}>View Activities</button>
+              {activities[trip.id] && (
+                <ul>
+                  {activities[trip.id].map(activity => (
+                    <li key={activity.id}>
+                      {activity.name} - {activity.date} at {activity.time}, {activity.location}
+                    </li>
+                  ))}
+                </ul>
+              )}
               <button onClick={() => handleDeleteTrip(trip.id)}>Delete</button>
             </li>
           ))}
