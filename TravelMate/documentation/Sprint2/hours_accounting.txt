@@ -13,7 +13,8 @@ Taylor Slade:
   11/6: 1 hour fixing/debugging registration feature
   11/7: 2 hours testing and attempting to fix the delete trip feature (resolved some issues but still getting errors)
   11/8: 1 hour fixed trip deletion feature, worked on creating table for activities and itineraries
-  Total: 5 hours
+  11/10: 3 hours re-linking trips to user_ids, creating view profile feature
+  Total: 8 hours
     
 Sam Muehlebach: 
   11/7: 2.5 hours of implementing functionality for deleting trips and activities from the itinerary
