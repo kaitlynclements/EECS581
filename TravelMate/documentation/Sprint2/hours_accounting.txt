@@ -26,6 +26,7 @@ Lizzie Soltis:
     
 Aaditi Chinawalker: 
   11/7: 2.5 hours debugging trip deletion and attemmpting creation of activities database table
-  Total: 2.5 hours
+  11/10: 3 hours debugging delete activity and attempting profile update option
+  Total: 5.5 hours
 
 Total Hours: 23.5
