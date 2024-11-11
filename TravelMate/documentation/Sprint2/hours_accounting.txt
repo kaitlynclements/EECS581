@@ -17,7 +17,7 @@ Taylor Slade:
     
 Sam Muehlebach: 
   11/7: 2.5 hours of implementing functionality for deleting trips and activities from the itinerary
-  11/10: 2 hours testing and debugging sprint 2 requirements and developing sprint 3 requirements artifacts
+  11/10: 2 hours of testing sprint 2 requirements and developing sprint 3 requirements artifacts
   Total: 4.5 hours
     
 Lizzie Soltis: 
