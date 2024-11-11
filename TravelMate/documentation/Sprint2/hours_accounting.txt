@@ -17,7 +17,8 @@ Taylor Slade:
     
 Sam Muehlebach: 
   11/7: 2.5 hours of implementing functionality for deleting trips and activities from the itinerary
-  Total: 2.5 hours
+  11/10: 2 hours testing and debugging sprint 2 requirements and developing sprint 3 requirements artifacts
+  Total: 4.5 hours
     
 Lizzie Soltis: 
   11/9: 2 hours testing add activity 
@@ -29,4 +30,4 @@ Aaditi Chinawalker:
   11/10: 3 hours debugging delete activity and attempting profile update option
   Total: 5.5 hours
 
-Total Hours: 23.5
+Total Hours: 25.5
