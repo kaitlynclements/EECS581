@@ -4,7 +4,9 @@ Kaitlyn Clements:
 11/07: 2 hours- created activities database table, activity_controller.py, Updated ItineraryManager.jsx in frontend to handle tables, testing and debugging all the issues when I did this. 
   Trying to link specific individual itinerary objects to each individual trip object. *Note: I didn't upload these files to github since I haven't worked out all the kinks yet. 
 11/09: 3 hours- Trying to create a specific itinerary object for each trip created. Haven't had any luck with getting this to work while maintaining functionality. 
-    Total: 8 hours
+11/10: 1 hours- Still trying to link specific itinerary pages to each trip. When user clicks link, they are taken to the URL, but the page doesn't change. Didn't upload because it took away base itinerary functionality. 
+11/10: 1 hour- Rewriting and redetermining requirements to make sense after evaluating teams performance and skill set. Distinguishing specific differences between certain requirements that overlap. 
+    Total: 10 hours
     
 Taylor Slade: 
   11/5: 1 hour linking trips to specific user_ids, displaying trips only when user is logged in
@@ -26,4 +28,4 @@ Aaditi Chinawalker:
   11/7: 2.5 hours debugging trip deletion and attemmpting creation of activities database table
   Total: 2.5 hours
 
-Total Hours: 21.5
+Total Hours: 23.5
