@@ -12,6 +12,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import TripManager from './components/TripManager';
 import ItineraryManager from './components/ItineraryManager';
+import Profile from './components/Profile';
 
 function App() {
   return (
@@ -24,10 +25,10 @@ function App() {
           <Route path="/register" component={Register} />
           <Route path="/trips" component={TripManager} />
           <Route path="/create-itinerary" component={ItineraryManager} />
+          <Route path="/profile" component={Profile} />
         </Switch>
       </div>
     </Router>
   );
 }
-
 export default App;

@@ -3,6 +3,7 @@ import api from '../services/api';
 import { deleteTrip } from '../services/api';
 import { useHistory } from 'react-router-dom';
 
+
 function TripManager() {
   const [trips, setTrips] = useState([]);
   const [tripName, setTripName] = useState('');

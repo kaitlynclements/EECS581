@@ -45,4 +45,67 @@ def login():
     if not user or not check_password_hash(user.password, password):
         return jsonify({"error": "Invalid credentials"}), 401
 
-    return jsonify({"message": "Login successful"}), 200
+    return jsonify({"message": "Login successful", "user_id": user.id}), 200
+
+@user_bp.route('/profile/<int:user_id>', methods=['GET'])
+def get_profile(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify({
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email
+    })
+
+
+@user_bp.route('/profile/<user_id>', methods=['PUT'])
+def update_profile(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Get the fields to update
+    data = request.get_json()
+    if 'first_name' in data:
+        user.first_name = data['first_name']
+    if 'last_name' in data:
+        user.last_name = data['last_name']
+    if 'email' in data:
+        user.email = data['email']
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to update profile"}), 500
+
+@user_bp.route('/profile/<user_id>/change-password', methods=['PUT'])
+def change_password(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+    current_password = data.get("currentPassword")
+    new_password = data.get("newPassword")
+
+    # Check if the current password matches
+    if not check_password_hash(user.password, current_password):
+        return jsonify({"error": "Incorrect current password"}), 400
+
+    # Hash the new password and update it
+    user.password = generate_password_hash(new_password)
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Password changed successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to change password"}), 500
+
