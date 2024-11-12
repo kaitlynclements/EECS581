@@ -3,8 +3,8 @@ Kaitlyn Clements
   Total: 1 hours
 
 Taylor Slade
-    
-  Total: 0 hours
+    11/11: 1 hour - resolved travelmate.db conflicts, drop down menu for activity creation, profile management updates
+  Total: 1 hours
 
 Sam Muelbach
     l
@@ -18,4 +18,4 @@ Aaditi Chinawalker
     l
   Total: 0 hours
 
-Total hours: 1
+Total hours: 2
