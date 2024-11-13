@@ -11,6 +11,7 @@ function TripManager() {
   const [endDate, setEndDate] = useState('');
   const [budget, setBudget] = useState(''); // New state for budget
   const [activities, setActivities] = useState({});
+  const [showActivities, setShowActivities] = useState({});
   const history = useHistory();
 
   const userId = localStorage.getItem('user_id');
@@ -37,10 +38,26 @@ function TripManager() {
   const fetchActivities = async (tripId) => {
     try {
       const response = await api.get(`/trips/${tripId}/activities`);
-      setActivities(prev => ({ ...prev, [tripId]: response.data }));
+      if (response.data.length === 0) {
+        setActivities(prev => ({ ...prev, [tripId]: 'No activities created for this trip yet' }));
+      } else {
+        setActivities(prev => ({ ...prev, [tripId]: response.data }));
+      }
     } catch (error) {
-      console.error("Error fetching activities:", error);
-      alert('Failed to load activities for this trip.');
+      if (error.response && error.response.status === 404) {
+        // Handle 404 specifically by setting a message
+        setActivities(prev => ({ ...prev, [tripId]: 'No activities created for this trip yet' }));
+      } else {
+        console.error("Error fetching activities:", error);
+        alert('Failed to load activities for this trip.');
+      }
+    }
+  };
+
+  const toggleActivities = (tripId) => {
+    setShowActivities(prev => ({ ...prev, [tripId]: !prev[tripId] }));
+    if (!showActivities[tripId]) {
+      fetchActivities(tripId);
     }
   };
 
@@ -88,11 +105,21 @@ function TripManager() {
         alert("Failed to delete activity");
       }
     }
+
   };
 
-  return (
+
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    const date = new Date(year, month - 1, day); // Month is 0-indexed in JavaScript Date
+    const options = { month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+
+return (
     <div>
-      <h2>Manage Trips</h2>
+      <h1>Manage Trips</h1>
       <button onClick={() => {
         localStorage.removeItem('user_id');
         history.push('/login');
@@ -108,35 +135,41 @@ function TripManager() {
           min="0" 
           step="0.01" 
           onChange={(e) => setBudget(e.target.value)} 
-        /> {/* New Budget input field */}
+        />
         <button onClick={createTrip}>Create Trip</button>
       </div>
-      <h3>Your Trips</h3>
+      <h2>Your Trips</h2>
       {trips.length > 0 ? (
-        <ul>
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
           {trips.map(trip => (
-            <li key={trip.id}>
-              <strong>{trip.name}</strong> - {trip.destination} ({trip.start_date} to {trip.end_date})
-              <div>Budget: ${trip.budget || 0.0}</div> {/* Display budget */}
-              <button onClick={() => fetchActivities(trip.id)}>View Activities</button>
-              {activities[trip.id] && (
+            <li key={trip.id} style={{ marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <h3 style={{ margin: '0 10px 0 0' }}>
+                  <strong>{trip.name}</strong> - {trip.destination} (
+                  {formatDate(trip.start_date)} - {formatDate(trip.end_date)}, {new Date(trip.start_date).getFullYear()})
+                </h3>
+                <button onClick={() => toggleActivities(trip.id)}>
+                  {fetchActivities[trip.id] ? 'Hide Activities' : 'View Activities'}
+                </button>
+                <button onClick={() => handleDeleteTrip(trip.id)} style={{ marginLeft: '10px' }}>Delete Trip</button>
+              </div>
+              <p>Budget: ${trip.budget}</p>
+              {showActivities[trip.id] && activities[trip.id] && (
                 <ul>
-                {activities[trip.id]
-                  .sort((a, b) => {
-                    // Convert date and time into Date objects for comparison
-                    const dateA = new Date(`${a.date}T${a.time}`);
-                    const dateB = new Date(`${b.date}T${b.time}`);
-                    return dateA - dateB; // Sorts in ascending order (earliest to latest)
-                  })
-                  .map(activity => (
-                    <li key={activity.id}>
-                      {activity.name} - {activity.date} at {activity.time}, {activity.location}
-                      <button onClick={() => handleDeleteActivity(trip.id, activity.id)}>Delete Activity</button>
-                    </li>
-                  ))}
-              </ul>
+                  {Array.isArray(activities[trip.id]) ? (
+                    activities[trip.id]
+                      .sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
+                      .map(activity => (
+                        <li key={activity.id}>
+                          {activity.name} - {activity.date} at {activity.time}, {activity.location}
+                          <button onClick={() => handleDeleteActivity(trip.id, activity.id)} style={{ marginLeft: '10px' }}>Delete Activity</button>
+                        </li>
+                      ))
+                  ) : (
+                    <li>{activities[trip.id]}</li>
+                  )}
+                </ul>
               )}
-              <button onClick={() => handleDeleteTrip(trip.id)}>Delete Trip</button>
             </li>
           ))}
         </ul>
@@ -148,3 +181,4 @@ function TripManager() {
 }
 
 export default TripManager;
+

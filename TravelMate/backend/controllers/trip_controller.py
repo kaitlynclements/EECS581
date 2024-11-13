@@ -19,58 +19,59 @@ def gettripslist():
     ]
     return jsonify(trip_list)
 
-@trip_bp.route('/trips', methods=['GET'])
-def get_user_trips():
-    user_id = request.args.get('user_id')
 
-    if not user_id:
-        return jsonify({"error": "User must be logged in to view trips"}), 401
-
-    trips = Trip.query.filter_by(user_id=user_id).all()
-
-    return jsonify([{
-        'id': trip.id,
-        'name': trip.name,
-        'destination': trip.destination,
-        'start_date': str(trip.start_date),
-        'end_date': str(trip.end_date),
-        'user_id': trip.user_id, 
-        'budget': trip.budget
-    } for trip in trips]), 200
-
-@trip_bp.route('/trips', methods=['POST'])
+@trip_bp.route('/trips', methods=['POST', 'GET'])
 def create_trip():
-    user_id = request.json.get('user_id')
-    start_date = datetime.strptime(request.json['start_date'], '%Y-%m-%d').date()
-    end_date = datetime.strptime(request.json['end_date'], '%Y-%m-%d').date()
-    data = request.get_json()
-    # Extract and validate budget
-    budget = data.get('budget', 0.0)
-    if not isinstance(budget, (int, float)) or budget < 0:
-        return {"error": "Budget must be a positive number"}, 400
+    if request.method == 'POST':
+        user_id = request.json.get('user_id')
+        start_date = datetime.strptime(request.json['start_date'], '%Y-%m-%d').date()
+        end_date = datetime.strptime(request.json['end_date'], '%Y-%m-%d').date()
+        data = request.get_json()
+        # Extract and validate budget
+        budget = data.get('budget', 0.0)
+        if not isinstance(budget, (int, float)) or budget < 0:
+            return {"error": "Budget must be a positive number"}, 400
 
-    new_trip = Trip(
-        name=request.json['name'],
-        destination=request.json['destination'],
-        start_date=start_date,
-        end_date=end_date,
-        user_id=user_id, 
-        budget=budget # add budget feature here
-    )
+        new_trip = Trip(
+            name=request.json['name'],
+            destination=request.json['destination'],
+            start_date=start_date,
+            end_date=end_date,
+            user_id=user_id,
+            budget=budget # add budget feature here
+        )
 
-    db.session.add(new_trip)
-    db.session.commit()
-    trip_data = {
-        'id': new_trip.id,
-        'name': new_trip.name,
-        'destination': new_trip.destination,
-        'start_date': str(new_trip.start_date),
-        'end_date': str(new_trip.end_date),
-        'user_id': new_trip.user_id,
-        'budget': new_trip.budget # add budget here
-    }
+        db.session.add(new_trip)
+        db.session.commit()
+        trip_data = {
+            'id': new_trip.id,
+            'name': new_trip.name,
+            'destination': new_trip.destination,
+            'start_date': str(new_trip.start_date),
+            'end_date': str(new_trip.end_date),
+            'user_id': new_trip.user_id,
+            'budget': new_trip.budget # add budget here
+        }
 
-    return jsonify(trip_data), 201
+        return jsonify(trip_data), 201
+
+    elif request.method == 'GET':
+        user_id = request.args.get('user_id')
+
+        if not user_id:
+            return jsonify({"error": "User must be logged in to view trips"}), 401
+
+        trips = Trip.query.filter_by(user_id=user_id).all()
+
+        return jsonify([{
+            'id': trip.id,
+            'name': trip.name,
+            'destination': trip.destination,
+            'start_date': str(trip.start_date),
+            'end_date': str(trip.end_date),
+            'user_id': trip.user_id,
+            'budget': trip.budget
+        } for trip in trips]), 200
 
 @trip_bp.route('/trips/<int:trip_id>/itinerary', methods=['GET'])
 def get_itinerary(trip_id):
@@ -90,7 +91,7 @@ def get_itinerary(trip_id):
 
     return jsonify(result), 200
 
-@trip_bp.route('/trips/<int:trip_id>/itinerary/activities', methods=['POST'])
+@trip_bp.route('/trips/<int:trip_id>/itinerary/activities/create', methods=['POST'])
 def create_activity(trip_id):
     data = request.get_json()
     try:

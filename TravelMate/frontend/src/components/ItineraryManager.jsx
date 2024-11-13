@@ -17,19 +17,41 @@ const ItineraryManager = () => {
   // Retrieve userId from localStorage
   const userId = localStorage.getItem('user_id');
 
-  // Fetch user's trips when the component mounts
+
   useEffect(() => {
-    const fetchTrips = async () => {
+    const fetchTripsWithActivities = async () => {
       try {
         const response = await api.get(`/trips?user_id=${userId}`);
-        setTripOptions(response.data); // Store trips for dropdown
+        const tripsData = response.data;
+        console.log("Fetched trips data:", tripsData);
+
+        // Fetch activities for each trip
+        const tripsWithActivities = await Promise.all(
+          tripsData.map(async (trip) => {
+            try {
+              const activitiesResponse = await api.get(`/trips/${trip.id}/activities`);
+              return {
+                ...trip,
+                activities: activitiesResponse.data || [], // Set activities to an empty array if none
+              };
+            } catch (error) {
+              console.error(`Error fetching activities for trip ${trip.id}:`, error);
+              return { ...trip, activities: [] }; // Set to empty array on error
+            }
+          })
+        );
+
+        setTrips(tripsWithActivities); // Set trips with their activities
+        setTripOptions(tripsData); // Populate tripOptions for dropdown
       } catch (error) {
-        console.error("Error fetching trips:", error);
-        alert("Failed to load trips.");
+        console.error("Error fetching trips or activities:", error);
+        alert("Failed to load trips and activities.");
       }
     };
-    fetchTrips();
+
+    fetchTripsWithActivities();
   }, [userId]);
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +76,7 @@ const ItineraryManager = () => {
     } else {
       setSelectedTripBudget(null); // Reset budget if no trip is selected
     }
-  };
+  }
 
   const addActivity = async (e) => {
     e.preventDefault();
@@ -74,16 +96,17 @@ const ItineraryManager = () => {
         const tripId = tripOptions.find(t => t.name === typedTripName).id;
 
         // Send the new activity to the backend
-        await api.post(`/trips/${tripId}/itinerary/activities`, newActivity);
+        await api.post(`/trips/${tripId}/itinerary/activities/create`, newActivity);
 
-        // Update local state
-        setTrips((prevTrips) => {
-          const existingActivities = prevTrips[typedTripName] || [];
-          return {
-            ...prevTrips,
-            [typedTripName]: [...existingActivities, newActivity],
-          };
-        });
+        // Update local state without losing existing activities
+      setTrips((prevTrips) =>
+        prevTrips.map((trip) =>
+          trip.id === tripId
+            ? { ...trip, activities: [...trip.activities, newActivity] }
+            : trip
+        )
+      );
+
 
         // Reset form fields after adding
         setActivity({ name: '', date: '', time: '', location: '' });
@@ -101,9 +124,16 @@ const ItineraryManager = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    const date = new Date(year, month - 1, day); // Month is 0-indexed in JavaScript Date
+    const options = { month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
   return (
     <div className="itinerary-manager">
-      <h2>Create Itinerary</h2>
+      <h1>Manage Itineraries</h1>
       <form onSubmit={addActivity}>
         <div>
           <label>Trip Name:</label>
@@ -160,22 +190,37 @@ const ItineraryManager = () => {
         <button type="submit">Add Activity</button>
       </form>
 
-      <h3>Planned Activities</h3>
-      {Object.keys(trips).length > 0 ? (
-        Object.keys(trips).map((tripName) => (
-          <div key={tripName} className="trip-activities">
-            <h4>{tripName}</h4>
+      <h2>Your Itineraries</h2>
+      {trips.length > 0 ? (
+        trips.map((trip) => (
+          <div key={trip.id} className="trip-activities">
+            <h3 style={{ margin: '0 10px 0 0' }}>
+                  <strong>{trip.name}</strong> - {trip.destination} (
+                  {formatDate(trip.start_date)} - {formatDate(trip.end_date)}, {new Date(trip.start_date).getFullYear()})
+            </h3>
             <ul>
-              {trips[tripName].map((activity, index) => (
-                <li key={index}>
-                  <strong>{activity.name}</strong> - {activity.date} at {activity.time}, {activity.location}
-                </li>
-              ))}
-            </ul>
+            {trip.activities.length > 0 ? (
+              trip.activities
+                .slice() // Make a copy of the activities array to avoid mutating the original state
+                .sort((a, b) => {
+                // Convert date and time strings into Date objects for comparison
+                const dateTimeA = new Date(`${a.date}T${a.time}`);
+                const dateTimeB = new Date(`${b.date}T${b.time}`);
+                return dateTimeA - dateTimeB; // Sort in ascending order (earliest to latest)
+              })
+            .map((activity, index) => (
+            <li key={index}>
+            <strong>{activity.name}</strong> - {activity.date} at {activity.time}, {activity.location}
+        </li>
+      ))
+  ) : (
+    <li>No activities created for this trip yet.</li>
+  )}
+</ul>
           </div>
         ))
       ) : (
-        <p>No activities added yet.</p>
+        <p>No trips found.</p>
       )}
     </div>
   );
