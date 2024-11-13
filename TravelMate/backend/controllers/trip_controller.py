@@ -34,6 +34,8 @@ def get_user_trips():
         'destination': trip.destination,
         'start_date': str(trip.start_date),
         'end_date': str(trip.end_date),
+        'user_id': trip.user_id, 
+        'budget': trip.budget
     } for trip in trips]), 200
 
 @trip_bp.route('/trips', methods=['POST'])
@@ -41,13 +43,19 @@ def create_trip():
     user_id = request.json.get('user_id')
     start_date = datetime.strptime(request.json['start_date'], '%Y-%m-%d').date()
     end_date = datetime.strptime(request.json['end_date'], '%Y-%m-%d').date()
+    data = request.get_json()
+    # Extract and validate budget
+    budget = data.get('budget', 0.0)
+    if not isinstance(budget, (int, float)) or budget < 0:
+        return {"error": "Budget must be a positive number"}, 400
 
     new_trip = Trip(
         name=request.json['name'],
         destination=request.json['destination'],
         start_date=start_date,
         end_date=end_date,
-        user_id=user_id
+        user_id=user_id, 
+        budget=budget # add budget feature here
     )
 
     db.session.add(new_trip)
@@ -58,7 +66,8 @@ def create_trip():
         'destination': new_trip.destination,
         'start_date': str(new_trip.start_date),
         'end_date': str(new_trip.end_date),
-        'user_id': new_trip.user_id
+        'user_id': new_trip.user_id,
+        'budget': new_trip.budget # add budget here
     }
 
     return jsonify(trip_data), 201

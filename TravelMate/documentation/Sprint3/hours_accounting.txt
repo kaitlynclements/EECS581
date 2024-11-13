@@ -1,21 +1,22 @@
 Kaitlyn Clements
     11/11: 1 hour- Created github sprint 3 folder and files, wrote up requirements and drew out requirements for what application should look like
-  Total: 1 hours
+	11/13: 1 hour- Created document containing all of the main files' descriptions that we may need to use to implement certain requirements and functionality. Makes it easier to visualize and keep track of what files need to be edited for a particular task. 
+  Total: 2 hours
 
 Taylor Slade
     
   Total: 0 hours
 
 Sam Muelbach
-    l
+    
   Total: 0 hours
 
 Lizzie Soltis
-    l
+    
   Total: 0 hours
 
 Aaditi Chinawalker
-    l
+    
   Total: 0 hours
 
-Total hours: 1
+Total hours: 2

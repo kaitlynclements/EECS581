@@ -32,6 +32,7 @@ class Trip(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship("User", back_populates="trips")
     activities = db.relationship("Activity", back_populates="trip", cascade="all, delete-orphan")
+    budget = Column(db.Float, nullable=False, default=0.0)  # Enforce a non-negative budget
 
 class Activity(db.Model):
     __tablename__ = 'activities'

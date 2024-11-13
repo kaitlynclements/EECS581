@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 
-
 const ItineraryManager = () => {
   const [trips, setTrips] = useState({});
   const [tripOptions, setTripOptions] = useState([]); // Stores available trips for the dropdown
   const [typedTripName, setTypedTripName] = useState('');
+  const [selectedTripBudget, setSelectedTripBudget] = useState(null); // New state for budget
   const [activity, setActivity] = useState({
     name: '',
     date: '',
@@ -38,8 +38,21 @@ const ItineraryManager = () => {
     }));
   };
 
-  const handleTripNameChange = (e) => {
+  const handleTripNameChange = async (e) => {
     setTypedTripName(e.target.value); // Update selected trip name
+    
+    // Fetch the selected trip's details, including budget
+    const selectedTrip = tripOptions.find((trip) => trip.name === e.target.value);
+    if (selectedTrip) {
+      try {
+        const response = await api.get(`/trips/${selectedTrip.id}`);
+        setSelectedTripBudget(response.data.budget); // Store the trip's budget
+      } catch (error) {
+        console.error("Error fetching trip budget:", error);
+      }
+    } else {
+      setSelectedTripBudget(null); // Reset budget if no trip is selected
+    }
   };
 
   const addActivity = async (e) => {
@@ -66,6 +79,7 @@ const ItineraryManager = () => {
         // Reset form fields after adding
         setActivity({ name: '', date: '', time: '', location: '' });
         setTypedTripName('');
+        setSelectedTripBudget(null); // Reset budget when trip is deselected
       } catch (error) {
         alert('Failed to add activity: ' + error.message);
       }
@@ -88,6 +102,11 @@ const ItineraryManager = () => {
               </option>
             ))}
           </select>
+          {selectedTripBudget !== null && (
+            <div>
+              <h3>Total Budget: ${selectedTripBudget}</h3>
+            </div>
+          )}
         </div>
         <div>
           <label>Name:</label>
@@ -150,5 +169,3 @@ const ItineraryManager = () => {
 };
 
 export default ItineraryManager;
-
-

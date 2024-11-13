@@ -3,13 +3,13 @@ import api from '../services/api';
 import { deleteTrip } from '../services/api';
 import { useHistory } from 'react-router-dom';
 
-
 function TripManager() {
   const [trips, setTrips] = useState([]);
   const [tripName, setTripName] = useState('');
   const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [budget, setBudget] = useState(''); // New state for budget
   const [activities, setActivities] = useState({});
   const history = useHistory();
 
@@ -27,6 +27,7 @@ function TripManager() {
   const fetchUserTrips = async () => {
     try {
       const response = await api.get(`/trips?user_id=${userId}`);
+      console.log("Trips fetched:", response.data);
       setTrips(response.data);
     } catch (error) {
       alert('Failed to load trips.');
@@ -44,13 +45,19 @@ function TripManager() {
   };
 
   const createTrip = async () => {
+    if (budget < 0) {
+      alert("Budget must be a positive number");
+      return;
+    }
+
     try {
       await api.post('/trips', {
         name: tripName,
         destination,
         start_date: startDate,
         end_date: endDate,
-        user_id: userId
+        user_id: userId,
+        budget: parseFloat(budget) || 0.0  // Include budget here, ensure it's a number
       });
       fetchUserTrips();
       alert('Trip created successfully!');
@@ -95,6 +102,13 @@ function TripManager() {
         <input type="text" placeholder="Destination" onChange={(e) => setDestination(e.target.value)} />
         <input type="date" onChange={(e) => setStartDate(e.target.value)} />
         <input type="date" onChange={(e) => setEndDate(e.target.value)} />
+        <input 
+          type="number" 
+          placeholder="Budget" 
+          min="0" 
+          step="0.01" 
+          onChange={(e) => setBudget(e.target.value)} 
+        /> {/* New Budget input field */}
         <button onClick={createTrip}>Create Trip</button>
       </div>
       <h3>Your Trips</h3>
@@ -103,6 +117,7 @@ function TripManager() {
           {trips.map(trip => (
             <li key={trip.id}>
               <strong>{trip.name}</strong> - {trip.destination} ({trip.start_date} to {trip.end_date})
+              <div>Budget: ${trip.budget || 0.0}</div> {/* Display budget */}
               <button onClick={() => fetchActivities(trip.id)}>View Activities</button>
               {activities[trip.id] && (
                 <ul>

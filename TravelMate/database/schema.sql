@@ -20,5 +20,6 @@ CREATE TABLE trips (
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     user_id INTEGER,
+    budget REAL CHECK(budget >= 0) DEFAULT 0.0,  -- Add budget column here with a default value
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
