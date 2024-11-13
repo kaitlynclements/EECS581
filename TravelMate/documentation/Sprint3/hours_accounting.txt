@@ -1,7 +1,8 @@
 Kaitlyn Clements
-    11/11: 1 hour- Created github sprint 3 folder and files, wrote up requirements and drew out requirements for what application should look like
+	11/11: 1 hour- Created github sprint 3 folder and files, wrote up requirements and drew out requirements for what application should look like
 	11/13: 1 hour- Created document containing all of the main files' descriptions that we may need to use to implement certain requirements and functionality. Makes it easier to visualize and keep track of what files need to be edited for a particular task. 
-  Total: 2 hours
+	11/13: 1 hour- Added a basic budget field feature to trips when they are created. 
+  Total: 3 hours
 
 Taylor Slade
     11/11: 1 hour - resolved travelmate.db conflicts, drop down menu for activity creation, profile management updates
