@@ -99,6 +99,8 @@ def change_password(user_id):
     if not check_password_hash(user.password, current_password):
         return jsonify({"error": "Incorrect current password"}), 400
 
+    if not new_password:
+        return jsonify({"error": "New password cannot be empty"}), 400
     # Hash the new password and update it
     user.password = generate_password_hash(new_password)
 

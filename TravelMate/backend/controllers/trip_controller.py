@@ -94,6 +94,17 @@ def get_itinerary(trip_id):
 def create_activity(trip_id):
     data = request.get_json()
     try:
+        trip = Trip.query.get(trip_id)
+        if not trip:
+            return jsonify({'error': 'Trip not found'}), 404
+
+        # Parse the activity date
+        activity_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+
+        # Validate the activity date is within the trip's date range
+        if activity_date < trip.start_date or activity_date > trip.end_date:
+            return jsonify({'error': 'Activity date must be within the trip date range'}), 400
+        
         activity = Activity(
             trip_id=trip_id,
             name=data['name'],

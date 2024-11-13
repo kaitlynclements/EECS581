@@ -121,13 +121,20 @@ function TripManager() {
               <button onClick={() => fetchActivities(trip.id)}>View Activities</button>
               {activities[trip.id] && (
                 <ul>
-                  {activities[trip.id].map(activity => (
+                {activities[trip.id]
+                  .sort((a, b) => {
+                    // Convert date and time into Date objects for comparison
+                    const dateA = new Date(`${a.date}T${a.time}`);
+                    const dateB = new Date(`${b.date}T${b.time}`);
+                    return dateA - dateB; // Sorts in ascending order (earliest to latest)
+                  })
+                  .map(activity => (
                     <li key={activity.id}>
                       {activity.name} - {activity.date} at {activity.time}, {activity.location}
                       <button onClick={() => handleDeleteActivity(trip.id, activity.id)}>Delete Activity</button>
                     </li>
                   ))}
-                </ul>
+              </ul>
               )}
               <button onClick={() => handleDeleteTrip(trip.id)}>Delete Trip</button>
             </li>

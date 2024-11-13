@@ -46,6 +46,10 @@ function Profile() {
     };
 
     const handlePasswordChange = async () => {
+        if (!passwords.newPassword) {
+            alert("New password cannot be empty.");
+            return; // Exit the function if newPassword is empty
+        }
         try {
             await api.put(`/profile/${localStorage.getItem('user_id')}/change-password`, {
                 currentPassword: passwords.currentPassword,

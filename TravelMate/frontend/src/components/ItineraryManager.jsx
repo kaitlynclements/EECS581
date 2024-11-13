@@ -6,6 +6,7 @@ const ItineraryManager = () => {
   const [tripOptions, setTripOptions] = useState([]); // Stores available trips for the dropdown
   const [typedTripName, setTypedTripName] = useState('');
   const [selectedTripBudget, setSelectedTripBudget] = useState(null); // New state for budget
+  const [selectedTripDates, setSelectedTripDates] = useState({ startDate: '', endDate: '' });
   const [activity, setActivity] = useState({
     name: '',
     date: '',
@@ -60,6 +61,14 @@ const ItineraryManager = () => {
     if (activity.name && activity.date && activity.time && activity.location && typedTripName) {
       const newActivity = { ...activity };
 
+      const activityDate = new Date(activity.date);
+      const startDate = new Date(selectedTripDates.startDate);
+      const endDate = new Date(selectedTripDates.endDate);
+
+      if (activityDate < startDate || activityDate > endDate) {
+        return jsonify({'error': "Activity date must be within the trip date range"}), 400;
+      }
+
       try {
         // Find the selected trip ID
         const tripId = tripOptions.find(t => t.name === typedTripName).id;
@@ -81,7 +90,11 @@ const ItineraryManager = () => {
         setTypedTripName('');
         setSelectedTripBudget(null); // Reset budget when trip is deselected
       } catch (error) {
-        alert('Failed to add activity: ' + error.message);
+        if (error.response && error.response.status === 400) {
+            alert(error.response.data.error);
+        } else {
+            alert("Failed to add activity: " + error.message);
+        }
       }
     } else {
       alert('Please fill out all fields and select a trip name');
