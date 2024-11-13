@@ -8,7 +8,7 @@ Taylor Slade
     11/11: 1 hour - resolved travelmate.db conflicts, drop down menu for activity creation, profile management updates
   Total: 1 hours
 
-Sam Muelbach
+Sam Muehlebach
     
   Total: 0 hours
 
