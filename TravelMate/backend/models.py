@@ -32,7 +32,7 @@ class Trip(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship("User", back_populates="trips")
     activities = db.relationship("Activity", back_populates="trip", cascade="all, delete-orphan")
-    budget = Column(db.Float, nullable=False, default=0.0)  # Enforce a non-negative budget
+    budget = db.Column(db.Float, nullable=False, default=0.0)  # Enforce a non-negative budget
 
 class Activity(db.Model):
     __tablename__ = 'activities'
@@ -43,3 +43,5 @@ class Activity(db.Model):
     time = db.Column(db.Time, nullable=False)
     location = db.Column(db.String(200), nullable=False)
     trip = db.relationship("Trip", back_populates="activities")
+    cost = db.Column(db.Float, default=0.0)
+    category = db.Column(db.String, default="Other")

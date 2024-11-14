@@ -13,6 +13,7 @@ import Register from './components/Register';
 import TripManager from './components/TripManager';
 import ItineraryManager from './components/ItineraryManager';
 import Profile from './components/Profile';
+import BudgetManager from './components/BudgetManager';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/trips" component={TripManager} />
           <Route path="/create-itinerary" component={ItineraryManager} />
           <Route path="/profile" component={Profile} />
+          <Route path="/budget" component={BudgetManager}/>
         </Switch>
       </div>
     </Router>

@@ -151,7 +151,42 @@ def get_trip_activities(trip_id):
             'name': activity.name,
             'date': activity.date.strftime('%Y-%m-%d'),
             'time': activity.time.strftime('%H:%M'),
-            'location': activity.location
+            'location': activity.location,
+            'cost': activity.cost,
+            'category': activity.category
         } for activity in activities
     ]
     return jsonify(result), 200
+
+@trip_bp.route('/trips/<int:trip_id>', methods=['GET'])
+def get_trip(trip_id):
+    trip = Trip.query.get(trip_id)
+    if not trip:
+        return jsonify({"error": "Trip not found"}), 404
+
+    trip_data = {
+        'id': trip.id,
+        'name': trip.name,
+        'destination': trip.destination,
+        'start_date': trip.start_date.strftime('%Y-%m-%d'),
+        'end_date': trip.end_date.strftime('%Y-%m-%d'),
+        'budget': trip.budget
+    }
+    return jsonify(trip_data), 200
+
+@trip_bp.route('/trips/<int:trip_id>/activities/<int:activity_id>', methods=['PATCH'])
+def update_activity(trip_id, activity_id):
+    data = request.get_json()
+    activity = Activity.query.filter_by(id=activity_id, trip_id=trip_id).first()
+
+    if not activity:
+        return jsonify({"error": "Activity not found"}), 404
+
+    # Update cost and category if provided in the request
+    if 'cost' in data:
+        activity.cost = data['cost']
+    if 'category' in data:
+        activity.category = data['category']
+
+    db.session.commit()
+    return jsonify({"message": "Activity updated successfully"}), 200

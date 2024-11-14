@@ -12,6 +12,7 @@ function Navbar() {
         <li><Link to="/trips">Trips</Link></li>
         <li><Link to="/create-itinerary">Itineraries</Link></li>
         <li><Link to="/profile">Profile</Link></li>
+        <li><Link to="/budget">Budget</Link></li>
       </ul>
     </nav>
   );
