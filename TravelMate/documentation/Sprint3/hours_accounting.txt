@@ -11,8 +11,8 @@ Taylor Slade
   Total: 3 hours
 
 Sam Muehlebach
-    
-  Total: 0 hours
+	11/14: 2 hours- Researching Google Maps API behavior and implementing the API into the trips and itinerary pages
+  Total: 2 hours
 
 Lizzie Soltis
     
@@ -22,4 +22,4 @@ Aaditi Chinawalker
     
   Total: 0 hours
 
-Total hours: 6
+Total hours: 8
