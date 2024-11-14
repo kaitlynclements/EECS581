@@ -7,7 +7,8 @@ Kaitlyn Clements
 
 Taylor Slade
     11/11: 1 hour - resolved travelmate.db conflicts, drop down menu for activity creation, profile management updates
-  Total: 1 hours
+    11/13: 2 hours - sorted activities by date and time, display activities in itinerary tab, user-friendly display of dates, no activity creation outside trip date range
+  Total: 3 hours
 
 Sam Muehlebach
     
@@ -21,4 +22,4 @@ Aaditi Chinawalker
     
   Total: 0 hours
 
-Total hours: 3
+Total hours: 6
