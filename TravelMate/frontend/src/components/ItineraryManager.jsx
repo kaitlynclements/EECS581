@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import MapComponent from './MapComponent'; // Import the Map component
 
 const ItineraryManager = () => {
   const [trips, setTrips] = useState({});
@@ -16,7 +17,6 @@ const ItineraryManager = () => {
 
   // Retrieve userId from localStorage
   const userId = localStorage.getItem('user_id');
-
 
   useEffect(() => {
     const fetchTripsWithActivities = async () => {
@@ -51,7 +51,6 @@ const ItineraryManager = () => {
 
     fetchTripsWithActivities();
   }, [userId]);
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -99,14 +98,13 @@ const ItineraryManager = () => {
         await api.post(`/trips/${tripId}/itinerary/activities/create`, newActivity);
 
         // Update local state without losing existing activities
-      setTrips((prevTrips) =>
-        prevTrips.map((trip) =>
-          trip.id === tripId
-            ? { ...trip, activities: [...trip.activities, newActivity] }
-            : trip
-        )
-      );
-
+        setTrips((prevTrips) =>
+          prevTrips.map((trip) =>
+            trip.id === tripId
+              ? { ...trip, activities: [...trip.activities, newActivity] }
+              : trip
+          )
+        );
 
         // Reset form fields after adding
         setActivity({ name: '', date: '', time: '', location: '' });
@@ -132,96 +130,96 @@ const ItineraryManager = () => {
   };
 
   return (
-    <div className="itinerary-manager">
-      <h1>Manage Itineraries</h1>
-      <form onSubmit={addActivity}>
-        <div>
-          <label>Trip Name:</label>
-          <select value={typedTripName} onChange={handleTripNameChange}>
-            <option value="">Select a trip</option>
-            {tripOptions.map((trip) => (
-              <option key={trip.id} value={trip.name}>
-                {trip.name}
-              </option>
-            ))}
-          </select>
-          {selectedTripBudget !== null && (
-            <div>
-              <h3>Total Budget: ${selectedTripBudget}</h3>
-            </div>
-          )}
-        </div>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={activity.name}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label>Date:</label>
-          <input
-            type="date"
-            name="date"
-            value={activity.date}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label>Time:</label>
-          <input
-            type="time"
-            name="time"
-            value={activity.time}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label>Location:</label>
-          <input
-            type="text"
-            name="location"
-            value={activity.location}
-            onChange={handleInputChange}
-          />
-        </div>
-        <button type="submit">Add Activity</button>
-      </form>
-
-      <h2>Your Itineraries</h2>
-      {trips.length > 0 ? (
-        trips.map((trip) => (
-          <div key={trip.id} className="trip-activities">
-            <h3 style={{ margin: '0 10px 0 0' }}>
-                  <strong>{trip.name}</strong> - {trip.destination} (
-                  {formatDate(trip.start_date)} - {formatDate(trip.end_date)}, {new Date(trip.start_date).getFullYear()})
-            </h3>
-            <ul>
-            {trip.activities.length > 0 ? (
-              trip.activities
-                .slice() // Make a copy of the activities array to avoid mutating the original state
-                .sort((a, b) => {
-                // Convert date and time strings into Date objects for comparison
-                const dateTimeA = new Date(`${a.date}T${a.time}`);
-                const dateTimeB = new Date(`${b.date}T${b.time}`);
-                return dateTimeA - dateTimeB; // Sort in ascending order (earliest to latest)
-              })
-            .map((activity, index) => (
-            <li key={index}>
-            <strong>{activity.name}</strong> - {activity.date} at {activity.time}, {activity.location}
-        </li>
-      ))
-  ) : (
-    <li>No activities created for this trip yet.</li>
-  )}
-</ul>
+    <div className="itinerary-manager" style={{ display: 'flex' }}>
+      <div style={{ flex: 1 }}>
+        <h1>Manage Itineraries</h1>
+        <form onSubmit={addActivity}>
+          <div>
+            <label>Trip Name:</label>
+            <select value={typedTripName} onChange={handleTripNameChange}>
+              <option value="">Select a trip</option>
+              {tripOptions.map((trip) => (
+                <option key={trip.id} value={trip.name}>
+                  {trip.name}
+                </option>
+              ))}
+            </select>
+            {selectedTripBudget !== null && (
+              <div>
+                <h3>Total Budget: ${selectedTripBudget}</h3>
+              </div>
+            )}
           </div>
-        ))
-      ) : (
-        <p>No trips found.</p>
-      )}
+          <div>
+            <label>Name:</label>
+            <input
+              type="text"
+              name="name"
+              value={activity.name}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label>Date:</label>
+            <input
+              type="date"
+              name="date"
+              value={activity.date}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label>Time:</label>
+            <input
+              type="time"
+              name="time"
+              value={activity.time}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label>Location:</label>
+            <input
+              type="text"
+              name="location"
+              value={activity.location}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button type="submit">Add Activity</button>
+        </form>
+
+        <h2>Your Itineraries</h2>
+        {trips.length > 0 ? (
+          trips.map((trip) => (
+            <div key={trip.id} className="trip-activities">
+              <h3>
+                <strong>{trip.name}</strong> - {trip.destination} (
+                {formatDate(trip.start_date)} - {formatDate(trip.end_date)})
+              </h3>
+              <ul>
+                {trip.activities.length > 0 ? (
+                  trip.activities.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
+                    .map((activity, index) => (
+                      <li key={index}>
+                        <strong>{activity.name}</strong> - {activity.date} at {activity.time}, {activity.location}
+                      </li>
+                    ))
+                ) : (
+                  <li>No activities created for this trip yet.</li>
+                )}
+              </ul>
+            </div>
+          ))
+        ) : (
+          <p>No trips found.</p>
+        )}
+      </div>
+
+      <div style={{ width: '30%', marginLeft: '20px' }}>
+        <h3>Map</h3>
+        <MapComponent width="100%" height="200px" /> {/* Small map */}
+      </div>
     </div>
   );
 };

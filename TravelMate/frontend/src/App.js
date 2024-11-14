@@ -14,6 +14,7 @@ import TripManager from './components/TripManager';
 import ItineraryManager from './components/ItineraryManager';
 import Profile from './components/Profile';
 import BudgetManager from './components/BudgetManager';
+import MapComponent from './components/MapComponent'; // Import the new Map component
 
 function App() {
   return (
@@ -27,10 +28,12 @@ function App() {
           <Route path="/trips" component={TripManager} />
           <Route path="/create-itinerary" component={ItineraryManager} />
           <Route path="/profile" component={Profile} />
-          <Route path="/budget" component={BudgetManager}/>
+          <Route path="/budget" component={BudgetManager} />
+          <Route path="/map" component={MapComponent} /> {/* New Route for Map */}
         </Switch>
       </div>
     </Router>
   );
 }
+
 export default App;

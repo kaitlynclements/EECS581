@@ -2,6 +2,7 @@
   "name": "travelmate-frontend",
   "version": "1.0.0",
   "dependencies": {
+    "@react-google-maps/api": "^2.20.3",
     "axios": "^0.24.0",
     "caniuse-lite": "^1.0.30001673",
     "chart.js": "^4.4.6",
