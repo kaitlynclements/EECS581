@@ -8,7 +8,8 @@ Kaitlyn Clements
 Taylor Slade
     11/11: 1 hour - resolved travelmate.db conflicts, drop down menu for activity creation, profile management updates
     11/13: 2 hours - sorted activities by date and time, display activities in itinerary tab, user-friendly display of dates, no activity creation outside trip date range
-  Total: 3 hours
+    11/17: 2 hours webpage styling 
+  Total:  5 hours
 
 Sam Muehlebach
 	11/14: 2 hours- Researching Google Maps API behavior and implementing the API into the trips and itinerary pages
@@ -22,4 +23,4 @@ Aaditi Chinawalker
     
   Total: 0 hours
 
-Total hours: 12
+Total hours: 14
