@@ -18,10 +18,10 @@ Sam Muehlebach
 
 Lizzie Soltis
     
-  Total: 0 hours
+  11/24: 2 hours - Edit activity functionality debugging & testing
 
 Aaditi Chinawalker
     
   Total: 0 hours
 
-Total hours: 15
+Total hours: 17
