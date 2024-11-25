@@ -21,6 +21,8 @@ Lizzie Soltis
   11/24: 2 hours - Edit activity functionality debugging & testing
 
 Aaditi Chinawalker
+  11/14: 0.5 hours - Testing Google API functionality
+  11/24: 2.5 hours - Adding edit activity functionality 
     
   Total: 0 hours
 
