@@ -40,3 +40,26 @@ def get_trip_activities(trip_id):
         } for activity in activities
     ]
     return jsonify(result), 200
+
+@activity_bp.route('/activities/<int:activity_id>', methods=['PUT'])
+def update_activity(activity_id):
+    activity = Activity.query.get(activity_id)
+    if not activity:
+        return jsonify({"error": "Activity not found"}), 404
+
+    data = request.get_json()
+    if 'name' in data:
+        activity.name = data['name']
+    if 'date' in data:
+        activity.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+    if 'time' in data:
+        activity.time = datetime.strptime(data['time'], '%H:%M').time()
+    if 'location' in data:
+        activity.location = data['location']
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Activity updated successfully!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to update activity"}), 500
