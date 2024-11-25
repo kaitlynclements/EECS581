@@ -3,7 +3,7 @@ import api from '../services/api';
 import MapComponent from './MapComponent'; // Import the Map component
 
 const ItineraryManager = () => {
-  const [trips, setTrips] = useState({});
+  const [trips, setTrips] = useState([]);
   const [tripOptions, setTripOptions] = useState([]); // Stores available trips for the dropdown
   const [typedTripName, setTypedTripName] = useState('');
   const [selectedTripBudget, setSelectedTripBudget] = useState(null); // New state for budget
@@ -14,6 +14,8 @@ const ItineraryManager = () => {
     time: '',
     location: '',
   });
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentActivityId, setCurrentActivityId] = useState(null);
 
   // Retrieve userId from localStorage
   const userId = localStorage.getItem('user_id');
@@ -87,7 +89,7 @@ const ItineraryManager = () => {
       const endDate = new Date(selectedTripDates.endDate);
 
       if (activityDate < startDate || activityDate > endDate) {
-        return jsonify({'error': "Activity date must be within the trip date range"}), 400;
+        return alert("Activity date must be within the trip date range");
       }
 
       try {
@@ -95,13 +97,16 @@ const ItineraryManager = () => {
         const tripId = tripOptions.find(t => t.name === typedTripName).id;
 
         // Send the new activity to the backend
-        await api.post(`/trips/${tripId}/itinerary/activities/create`, newActivity);
+        const response = await api.post(`/trips/${tripId}/itinerary/activities/create`, newActivity);
+
+        // Assuming the response contains the created activity
+        const createdActivity = response.data.activity; // Adjust based on your API response
 
         // Update local state without losing existing activities
         setTrips((prevTrips) =>
           prevTrips.map((trip) =>
             trip.id === tripId
-              ? { ...trip, activities: [...trip.activities, newActivity] }
+              ? { ...trip, activities: [...trip.activities, { ...newActivity, id: createdActivity }] }
               : trip
           )
         );
@@ -112,9 +117,9 @@ const ItineraryManager = () => {
         setSelectedTripBudget(null); // Reset budget when trip is deselected
       } catch (error) {
         if (error.response && error.response.status === 400) {
-            alert(error.response.data.error);
+          alert(error.response.data.error);
         } else {
-            alert("Failed to add activity: " + error.message);
+          alert("Failed to add activity: " + error.message);
         }
       }
     } else {
@@ -123,10 +128,48 @@ const ItineraryManager = () => {
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return ''; // Return empty string if dateString is undefined
     const [year, month, day] = dateString.split('-');
     const date = new Date(year, month - 1, day); // Month is 0-indexed in JavaScript Date
     const options = { month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
+  };
+
+  const editActivity = (trip, activityId) => {
+    const activityToEdit = trip.activities.find(act => act.id === activityId);
+    setActivity(activityToEdit);
+    setIsEditing(true);
+    setCurrentActivityId(activityId);
+  };
+
+  const updateActivity = async (e) => {
+    e.preventDefault();
+    try {
+      // Send the updated activity to the backend
+      await api.put(`/activities/${currentActivityId}`, activity);
+
+      // Update local state to reflect changes
+      setTrips((prevTrips) =>
+        prevTrips.map((trip) => {
+          if (trip.activities) {
+            return {
+              ...trip,
+              activities: trip.activities.map((act) =>
+                act.id === currentActivityId ? { ...act, ...activity } : act
+              ),
+            };
+          }
+          return trip;
+        })
+      );
+
+      alert("Activity updated successfully!");
+      setIsEditing(false);
+      setActivity({ name: '', date: '', time: '', location: '' }); // Reset form
+    } catch (error) {
+      console.error("Error updating activity:", error);
+      alert("Failed to update activity.");
+    }
   };
 
   return (
@@ -190,7 +233,7 @@ const ItineraryManager = () => {
         </form>
 
         <h2>Your Itineraries</h2>
-        {trips.length > 0 ? (
+        {Array.isArray(trips) && trips.length > 0 ? (
           trips.map((trip) => (
             <div key={trip.id} className="trip-activities">
               <h3>
@@ -198,11 +241,12 @@ const ItineraryManager = () => {
                 {formatDate(trip.start_date)} - {formatDate(trip.end_date)})
               </h3>
               <ul>
-                {trip.activities.length > 0 ? (
+                {Array.isArray(trip.activities) && trip.activities.length > 0 ? (
                   trip.activities.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
-                    .map((activity, index) => (
-                      <li key={index}>
+                    .map((activity) => (
+                      <li key={activity.id}>
                         <strong>{activity.name}</strong> - {activity.date} at {activity.time}, {activity.location}
+                        <button onClick={() => editActivity(trip, activity.id)}>Edit</button>
                       </li>
                     ))
                 ) : (
@@ -220,6 +264,43 @@ const ItineraryManager = () => {
         <h3>Map</h3>
         <MapComponent width="100%" height="200px" /> {/* Small map */}
       </div>
+
+      {isEditing && (
+        <form onSubmit={updateActivity}>
+          <input
+            type="text"
+            name="name"
+            value={activity.name}
+            onChange={handleInputChange}
+            placeholder="Activity Name"
+            required
+          />
+          <input
+            type="date"
+            name="date"
+            value={activity.date}
+            onChange={handleInputChange}
+            required
+          />
+          <input
+            type="time"
+            name="time"
+            value={activity.time}
+            onChange={handleInputChange}
+            required
+          />
+          <input
+            type="text"
+            name="location"
+            value={activity.location}
+            onChange={handleInputChange}
+            placeholder="Location"
+            required
+          />
+          <button type="submit">Update Activity</button>
+          <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+        </form>
+      )}
     </div>
   );
 };
