@@ -7,8 +7,8 @@ Taylor Slade
   Total Hours: 0
   
 Sam Muelehbach
-  ...
-  Total Hours: 0
+  12/3: 3 hours- Tied trip and activity creation to the Google Maps API
+  Total Hours: 3 hours
   
 Aaditi Chinawalker
   ...
@@ -19,4 +19,4 @@ Lizzie Soltis
   Total Hours: 0
 
 
-Total Hours for group: .5 
+Total Hours for group: 3.5 hours
