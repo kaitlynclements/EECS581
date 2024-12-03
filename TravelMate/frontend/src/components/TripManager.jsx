@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { LoadScript, Autocomplete } from '@react-google-maps/api'; // Import Autocomplete
 import api from '../services/api';
 import { deleteTrip } from '../services/api';
 import { useHistory } from 'react-router-dom';
@@ -8,11 +9,14 @@ function TripManager() {
   const [trips, setTrips] = useState([]);
   const [tripName, setTripName] = useState('');
   const [destination, setDestination] = useState('');
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [budget, setBudget] = useState(''); // New state for budget
+  const [budget, setBudget] = useState('');
   const [activities, setActivities] = useState({});
   const [showActivities, setShowActivities] = useState({});
+  const [autocomplete, setAutocomplete] = useState(null); // Autocomplete instance
   const history = useHistory();
 
   const userId = localStorage.getItem('user_id');
@@ -71,10 +75,12 @@ function TripManager() {
       await api.post('/trips', {
         name: tripName,
         destination,
+        latitude,
+        longitude,
         start_date: startDate,
         end_date: endDate,
         user_id: userId,
-        budget: parseFloat(budget) || 0.0  // Include budget here, ensure it's a number
+        budget: parseFloat(budget) || 0.0
       });
       fetchUserTrips();
       alert('Trip created successfully!');
@@ -114,6 +120,23 @@ function TripManager() {
     return date.toLocaleDateString('en-US', options);
   };
 
+  const onLoad = (autocompleteInstance) => {
+    setAutocomplete(autocompleteInstance);
+  };
+
+  const onPlaceChanged = () => {
+    if (autocomplete) {
+      const place = autocomplete.getPlace();
+      if (place.geometry) {
+        setDestination(place.formatted_address);
+        setLatitude(place.geometry.location.lat());
+        setLongitude(place.geometry.location.lng());
+      } else {
+        alert("Please select a valid location from the suggestions.");
+      }
+    }
+  };
+
   return (
     <div style={{ display: 'flex' }}>
       <div style={{ flex: 1 }}>
@@ -123,16 +146,34 @@ function TripManager() {
           history.push('/login');
         }}>Logout</button>
         <div>
-          <input type="text" placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
-          <input type="text" placeholder="Destination" onChange={(e) => setDestination(e.target.value)} />
-          <input type="date" onChange={(e) => setStartDate(e.target.value)} />
-          <input type="date" onChange={(e) => setEndDate(e.target.value)} />
-          <input 
-            type="number" 
-            placeholder="Budget" 
-            min="0" 
-            step="0.01" 
-            onChange={(e) => setBudget(e.target.value)} 
+          <input
+            type="text"
+            placeholder="Trip Name"
+            onChange={(e) => setTripName(e.target.value)}
+          />
+          <LoadScript googleMapsApiKey="AIzaSyCbJ9OEK1bSd7DLg2XHOE8zT2PlBxODR1g" libraries={['places']}>
+            <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+              <input
+                type="text"
+                placeholder="Search Destination"
+                style={{ width: '100%', padding: '8px' }}
+              />
+            </Autocomplete>
+          </LoadScript>
+          <input
+            type="date"
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          <input
+            type="date"
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          <input
+            type="number"
+            placeholder="Budget"
+            min="0"
+            step="0.01"
+            onChange={(e) => setBudget(e.target.value)}
           />
           <button onClick={createTrip}>Create Trip</button>
         </div>
