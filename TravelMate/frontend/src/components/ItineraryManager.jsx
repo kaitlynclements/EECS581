@@ -26,34 +26,52 @@ const ItineraryManager = () => {
   useEffect(() => {
     const fetchTripsWithActivities = async () => {
       try {
-        const response = await api.get(`/trips?user_id=${userId}`);
-        const tripsData = response.data;
-
+        // Fetch owned trips
+        const ownedTripsResponse = await api.get(`/trips?user_id=${userId}`);
+        const ownedTrips = ownedTripsResponse.data;
+  
+        // Fetch shared trips
+        const sharedTripsResponse = await api.get(`/users/${userId}/shared-trips`);
+        const sharedTrips = sharedTripsResponse.data.map(trip => ({
+          ...trip,
+          shared: true, // Flag for shared trips
+        }));
+  
+        // Combine owned and shared trips
+        const allTrips = [...ownedTrips, ...sharedTrips];
+  
+        // Fetch activities for each trip
         const tripsWithActivities = await Promise.all(
-          tripsData.map(async (trip) => {
+          allTrips.map(async (trip) => {
             try {
               const activitiesResponse = await api.get(`/trips/${trip.id}/activities`);
-              return {
-                ...trip,
-                activities: activitiesResponse.data || [], // Set activities to an empty array if none
-              };
+              return { ...trip, activities: activitiesResponse.data || [] };
             } catch (error) {
-              console.error(`Error fetching activities for trip ${trip.id}:`, error);
-              return { ...trip, activities: [] };
+              console.warn(`No activities found for trip ${trip.id}:`, error);
+              return { ...trip, activities: [] }; // Initialize activities as empty
             }
           })
         );
-
+  
         setTrips(tripsWithActivities);
-        setTripOptions(tripsData);
+  
+        // Update trip options for dropdown
+        setTripOptions(
+          tripsWithActivities.map((trip) => ({
+            id: trip.id,
+            name: trip.name,
+            sharedBy: trip.shared ? trip.sharedBy || 'Someone' : null,
+          }))
+        );
       } catch (error) {
         console.error("Error fetching trips or activities:", error);
-        alert("Failed to load trips and activities.");
       }
     };
-
+  
     fetchTripsWithActivities();
-  }, [userId]);
+  }, []);
+  
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -146,12 +164,12 @@ const ItineraryManager = () => {
           <div>
             <label>Trip Name:</label>
             <select value={typedTripName} onChange={handleTripNameChange}>
-              <option value="">Select a trip</option>
-              {tripOptions.map((trip) => (
-                <option key={trip.id} value={trip.name}>
-                  {trip.name}
-                </option>
-              ))}
+            <option value="">Select a trip</option>
+            {tripOptions.map((trip) => (
+            <option key={trip.id} value={trip.name}>
+            {trip.name} {trip.sharedBy ? `(Shared)` : '(Owned)'}
+            </option>
+            ))}
             </select>
             {selectedTripBudget !== null && <h3>Total Budget: ${selectedTripBudget}</h3>}
           </div>

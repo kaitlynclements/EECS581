@@ -13,6 +13,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+trip_users = db.Table(
+    'trip_users',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('trip_id', db.Integer, db.ForeignKey('trips.id'), primary_key=True)
+)
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -20,7 +26,7 @@ class User(db.Model):
     last_name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
-    trips = db.relationship("Trip", back_populates="user")
+    trips = db.relationship("Trip", secondary=trip_users, back_populates="users")
 
 class Trip(db.Model):
     __tablename__ = 'trips'
@@ -30,7 +36,7 @@ class Trip(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship("User", back_populates="trips")
+    users = db.relationship("User", secondary=trip_users, back_populates="trips")
     activities = db.relationship("Activity", back_populates="trip", cascade="all, delete-orphan")
     budget = db.Column(db.Float, nullable=False, default=0.0)  # Enforce a non-negative budget
 

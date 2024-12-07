@@ -17,6 +17,7 @@ function TripManager() {
   const [activities, setActivities] = useState({});
   const [showActivities, setShowActivities] = useState({});
   const [autocomplete, setAutocomplete] = useState(null); // Autocomplete instance
+  const [showShareForm, setShowShareForm] = useState({});
   const history = useHistory();
 
   const userId = localStorage.getItem('user_id');
@@ -32,12 +33,38 @@ function TripManager() {
 
   const fetchUserTrips = async () => {
     try {
-      const response = await api.get(`/trips?user_id=${userId}`);
-      console.log("Trips fetched:", response.data);
-      setTrips(response.data);
+      // Fetch owned trips
+      const ownedTripsResponse = await api.get(`/trips?user_id=${userId}`);
+      const ownedTrips = ownedTripsResponse.data.map(trip => ({
+        ...trip,
+        sharedWith: trip.sharedWith || [], // Ensure sharedWith is always an array
+      }));
+  
+      // Fetch shared trips
+      const sharedTripsResponse = await api.get(`/users/${userId}/shared-trips`);
+      const sharedTrips = sharedTripsResponse.data.map(trip => ({
+        ...trip,
+        shared: true, // Add a flag for shared trips
+      }));
+  
+      // Combine owned and shared trips
+      const allTrips = [...ownedTrips, ...sharedTrips];
+      console.log("Trips fetched:", allTrips);
+  
+      setTrips(allTrips);
     } catch (error) {
+      console.error("Error fetching trips:", error);
       alert('Failed to load trips.');
     }
+  };  
+  
+  
+
+  const toggleShareForm = (tripId) => {
+    setShowShareForm((prev) => ({
+      ...prev,
+      [tripId]: !prev[tripId],
+    }));
   };
 
   const fetchActivities = async (tripId) => {
@@ -113,6 +140,50 @@ function TripManager() {
     }
   };
 
+  const handleShareTrip = async (tripId, email) => {
+    try {
+      const response = await api.post(`/trips/${tripId}/share`, { email });
+      alert(response.data.message);
+    } catch (error) {
+      console.error("Error sharing trip:", error);
+      alert("Failed to share trip.");
+    }
+  };
+  
+  const ShareForm = ({ tripId }) => {
+    const [email, setEmail] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+  
+    const handleShare = async () => {
+      try {
+        setErrorMessage(''); // Clear any previous errors
+        await api.post(`/trips/${tripId}/share`, { email });
+        alert(`Trip shared with ${email}`);
+        setEmail(''); // Clear input
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          setErrorMessage('Not a registered user'); // Show error if user is not found
+        } else {
+          setErrorMessage('Failed to share trip. Please try again.');
+        }
+      }
+    };
+  
+    return (
+      <div style={{ marginTop: '10px' }}>
+        <input
+          type="email"
+          placeholder="Enter user's email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{ marginRight: '10px' }}
+        />
+        <button onClick={handleShare}>Share</button>
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+      </div>
+    );
+  };
+  
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split('-');
     const date = new Date(year, month - 1, day);
@@ -178,43 +249,55 @@ function TripManager() {
           <button onClick={createTrip}>Create Trip</button>
         </div>
         <h2>Your Trips</h2>
-        {trips.length > 0 ? (
-          <ul style={{ listStyleType: 'none', padding: 0 }}>
-            {trips.map(trip => (
-              <li key={trip.id} style={{ marginBottom: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <h3 style={{ margin: '0 10px 0 0' }}>
-                    <strong>{trip.name}</strong> - {trip.destination} (
-                    {formatDate(trip.start_date)} - {formatDate(trip.end_date)}, {new Date(trip.start_date).getFullYear()})
-                  </h3>
-                  <button onClick={() => toggleActivities(trip.id)}>
-                    {showActivities[trip.id] ? 'Hide Activities' : 'View Activities'}
-                  </button>
-                  <button onClick={() => handleDeleteTrip(trip.id)} style={{ marginLeft: '10px' }}>Delete Trip</button>
-                </div>
-                <p>Budget: ${trip.budget}</p>
-                {showActivities[trip.id] && activities[trip.id] && (
-                  <ul>
-                    {Array.isArray(activities[trip.id]) ? (
-                      activities[trip.id]
-                        .sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
-                        .map(activity => (
-                          <li key={activity.id}>
-                            {activity.name} - {activity.date} at {activity.time}, {activity.location}
-                            <button onClick={() => handleDeleteActivity(trip.id, activity.id)} style={{ marginLeft: '10px' }}>Delete Activity</button>
-                          </li>
-                        ))
-                    ) : (
-                      <li>{activities[trip.id]}</li>
-                    )}
-                  </ul>
-                )}
-              </li>
-            ))}
+{trips.length > 0 ? (
+  <ul style={{ listStyleType: 'none', padding: 0 }}>
+    {trips.map(trip => (
+      <li key={trip.id} style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <h3 style={{ margin: '0 10px 0 0' }}>
+            <strong>{trip.name}</strong> - {trip.destination} (
+            {formatDate(trip.start_date)} - {formatDate(trip.end_date)}, {new Date(trip.start_date).getFullYear()})
+          </h3>
+          <button onClick={() => toggleActivities(trip.id)}>
+            {showActivities[trip.id] ? 'Hide Activities' : 'View Activities'}
+          </button>
+          <button onClick={() => handleDeleteTrip(trip.id)} style={{ marginLeft: '10px' }}>Delete Trip</button>
+          <button onClick={() => toggleShareForm(trip.id)} style={{ marginLeft: '10px' }}>
+            Share Trip
+          </button>
+        </div>
+        <p>Budget: ${trip.budget}</p>
+        <p>
+  {trip.shared
+    ? `Shared from: ${trip.sharedBy || 'Unknown Owner'}` // For shared trips
+    : trip.sharedWith.length > 0
+    }
+</p>
+        {showActivities[trip.id] && activities[trip.id] && (
+          <ul>
+            {Array.isArray(activities[trip.id]) ? (
+              activities[trip.id]
+                .sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
+                .map(activity => (
+                  <li key={activity.id}>
+                    {activity.name} - {activity.date} at {activity.time}, {activity.location}
+                    <button onClick={() => handleDeleteActivity(trip.id, activity.id)} style={{ marginLeft: '10px' }}>Delete Activity</button>
+                  </li>
+                ))
+            ) : (
+              <li>{activities[trip.id]}</li>
+            )}
           </ul>
-        ) : (
-          <p>No trips found. Create a new trip to get started!</p>
         )}
+        {showShareForm[trip.id] && <ShareForm tripId={trip.id} />}
+      </li>
+    ))}
+  </ul>
+) : (
+  <p>No trips found. Create a new trip to get started!</p>
+)}
+
+
       </div>
 
       <div style={{ width: '30%', marginLeft: '20px' }}>

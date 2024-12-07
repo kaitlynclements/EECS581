@@ -12,21 +12,38 @@ function BudgetManager() {
   const userId = localStorage.getItem('user_id');
   const categories = ["Travel", "Food/Drink", "Lodging", "Entertainment", "Other"];
 
+
   useEffect(() => {
     const fetchTrips = async () => {
+      const userId = localStorage.getItem('user_id');
       try {
-        const response = await api.get(`/trips?user_id=${userId}`);
-        setTrips(response.data);
+        // Fetch owned trips
+        const ownedTripsResponse = await api.get(`/trips?user_id=${userId}`);
+        const ownedTrips = ownedTripsResponse.data.map((trip) => ({
+          ...trip,
+          shared: false, // Mark owned trips as not shared
+        }));
+  
+        // Fetch shared trips
+        const sharedTripsResponse = await api.get(`/users/${userId}/shared-trips`);
+        const sharedTrips = sharedTripsResponse.data.map((trip) => ({
+          ...trip,
+          shared: true, // Mark as shared
+          sharedBy: trip.sharedBy, // Use the sharedBy field returned from backend
+        }));
+  
+        // Combine owned and shared trips
+        const allTrips = [...ownedTrips, ...sharedTrips];
+        setTrips(allTrips);
       } catch (error) {
         console.error("Error fetching trips:", error);
         alert("Failed to load trips.");
       }
     };
-
-    if (userId) {
-      fetchTrips();
-    }
-  }, [userId]);
+  
+    fetchTrips();
+  }, []);
+  
 
   const fetchTripDetails = async (tripId) => {
     try {
@@ -113,13 +130,13 @@ function BudgetManager() {
       
       <label htmlFor="tripDropdown">Select a Trip:</label>
       <select id="tripDropdown" value={selectedTrip} onChange={handleTripChange}>
-        <option value="">-- Select a Trip --</option>
-        {trips.map((trip) => (
-          <option key={trip.id} value={trip.id}>
-            {trip.name} - {trip.destination} ({trip.start_date} to {trip.end_date})
-          </option>
-        ))}
-      </select>
+  <option value="">-- Select a Trip --</option>
+  {trips.map((trip) => (
+    <option key={trip.id} value={trip.id}>
+      {trip.name} {trip.shared ? `(Shared by ${trip.sharedBy})` : '(Owned)'}
+    </option>
+  ))}
+</select>
 
       {tripDetails && (
         <div>

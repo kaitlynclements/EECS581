@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Trip, Activity
+from models import db, Trip, Activity, User, trip_users
 from datetime import datetime
 
 trip_bp = Blueprint('trip_bp', __name__)
@@ -190,3 +190,96 @@ def update_activity(trip_id, activity_id):
 
     db.session.commit()
     return jsonify({"message": "Activity updated successfully"}), 200
+
+
+@trip_bp.route('/trips/<int:trip_id>/share', methods=['POST'])
+def share_trip(trip_id):
+    data = request.get_json()
+    user_email = data.get('email')
+
+    trip = Trip.query.get(trip_id)
+    if not trip:
+        return jsonify({"error": "Trip not found"}), 404
+
+    user_to_share = User.query.filter_by(email=user_email).first()
+    if not user_to_share:
+        return jsonify({"error": "User not found"}), 404
+
+    # Prevent sharing with self
+    if user_to_share.id == trip.user_id:
+        return jsonify({"error": "You cannot share a trip with yourself."}), 400
+
+    # Add the user to the trip's shared users
+    if user_to_share not in trip.users:
+        trip.users.append(user_to_share)
+        try:
+            db.session.commit()
+            # Return updated shared users list
+            shared_users = [
+                {"id": user.id, "name": f"{user.first_name} {user.last_name}", "email": user.email}
+                for user in trip.users if user.id != trip.user_id
+            ]
+            return jsonify({
+                "message": f"Trip shared with {user_to_share.first_name} {user_to_share.last_name}!",
+                "sharedUsers": shared_users
+            }), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": "Failed to share trip."}), 500
+
+    return jsonify({"message": "User already has access to this trip."}), 200
+
+
+@trip_bp.route('/users/<int:user_id>/shared-trips', methods=['GET'])
+def get_shared_trips(user_id):
+    # Check if the user exists
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Query trips shared with the user
+    shared_trips = db.session.query(Trip).join(trip_users).filter(trip_users.c.user_id == user_id).all()
+
+    # Prepare response with sharedBy information
+    result = []
+    for trip in shared_trips:
+        owner = User.query.get(trip.user_id)  # Fetch the trip owner
+        result.append({
+            "id": trip.id,
+            "name": trip.name,
+            "destination": trip.destination,
+            "start_date": trip.start_date.strftime('%Y-%m-%d'),
+            "end_date": trip.end_date.strftime('%Y-%m-%d'),
+            "budget": trip.budget,
+            "sharedBy": f"{owner.first_name} {owner.last_name}",  # Include owner details
+        })
+
+    return jsonify(result), 200
+
+@trip_bp.route('/trips', methods=['GET'])
+def get_owned_trips():
+    user_id = request.args.get('user_id')
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    trips = Trip.query.filter_by(user_id=user_id).all()
+
+    result = []
+    for trip in trips:
+        # Fetch all users the trip is shared with
+        shared_users = [
+            f"{user.first_name} {user.last_name}"  # Format user names
+            for user in trip.users if user.id != trip.user_id
+        ]
+        result.append({
+            "id": trip.id,
+            "name": trip.name,
+            "destination": trip.destination,
+            "start_date": trip.start_date.strftime('%Y-%m-%d'),
+            "end_date": trip.end_date.strftime('%Y-%m-%d'),
+            "budget": trip.budget,
+            "sharedWith": shared_users  # Include shared users
+        })
+
+    return jsonify(result), 200
+
