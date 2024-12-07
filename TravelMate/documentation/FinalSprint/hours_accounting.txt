@@ -16,7 +16,6 @@ Aaditi Chinawalker
   
 Lizzie Soltis
   12/3: 2 hours - Debugging and trying to implement export itinerary PDF functionality
-  Total Hours: 2 hours
-
-
+  12/7: 4 hours - Print/PDF button functionality added
+  Total Hours: 6 hours
 Total Hours for group: 3.5 hours
