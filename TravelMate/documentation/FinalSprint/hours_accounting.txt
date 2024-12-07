@@ -3,8 +3,8 @@ Kaitlyn Clements
   Total Hours: .5 
   
 Taylor Slade
-  ...
-  Total Hours: 0
+  12/7: 3 hours - share and collaborate on trips functionality added
+  Total Hours: 3
   
 Sam Muelehbach
   12/3: 3 hours- Tied trip and activity creation to the Google Maps API
@@ -18,4 +18,5 @@ Lizzie Soltis
   12/3: 2 hours - Debugging and trying to implement export itinerary PDF functionality
   12/7: 4 hours - Print/PDF button functionality added
   Total Hours: 6 hours
-Total Hours for group: 3.5 hours
+
+Total Hours for group: 12.5 hours
