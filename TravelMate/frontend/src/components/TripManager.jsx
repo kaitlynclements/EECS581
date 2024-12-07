@@ -137,6 +137,18 @@ function TripManager() {
     }
   };
 
+  const handlePrint = () => {
+    const tripData = {
+      user: localStorage.getItem('user_email'), // Assume the user's email is stored
+      trips,
+      activities,
+    };
+    history.push({
+      pathname: '/print',
+      state: tripData,
+    });
+  };
+
   return (
     <div style={{ display: 'flex' }}>
       <div style={{ flex: 1 }}>
@@ -221,6 +233,11 @@ function TripManager() {
         <h3>Map</h3>
         <MapComponent width="100%" height="200px" /> {/* Small map */}
       </div>
+
+      <div style={{ marginTop: '20px' }}>
+        <button onClick={handlePrint}>Print</button>
+      </div>
+      
     </div>
   );
 }
