@@ -111,3 +111,16 @@ def change_password(user_id):
         db.session.rollback()
         return jsonify({"error": "Failed to change password"}), 500
 
+@user_bp.route('/api/user-trips/<user_id>', methods=['GET'])
+def get_user_trips(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    trips = Trip.query.filter_by(user_id=user_id).all()
+    if user:
+        return jsonify({
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "trips": [trip.to_dict() for trip in trips]
+        })
+    else:
+        return jsonify({"error": "User not found"}), 404

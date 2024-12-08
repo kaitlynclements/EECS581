@@ -208,17 +208,49 @@ function TripManager() {
     }
   };
 
-  const handlePrint = () => {
-    const tripData = {
-      user: localStorage.getItem('user_email'), // Assume the user's email is stored
-      trips,
-      activities,
-    };
-    history.push({
-      pathname: '/print',
-      state: tripData,
-    });
+  const handlePrint = async () => {
+    try {
+      // Fetch user details
+      const userResponse = await api.get(`/profile/${userId}`);
+      const user = userResponse.data;
+  
+      // Fetch activities for all trips
+      const activitiesMap = {};
+      for (const trip of trips) {
+        try {
+          const response = await api.get(`/trips/${trip.id}/activities`);
+          activitiesMap[trip.id] = response.data.length
+            ? response.data
+            : 'No activities for this trip.';
+        } catch (error) {
+          console.error(`Error fetching activities for trip ${trip.id}:`, error);
+          activitiesMap[trip.id] = 'No activities for this trip.';
+        }
+      }
+  
+      // Prepare data for printing
+      const tripData = {
+        user: {
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+        },
+        trips,
+        activities: activitiesMap,
+      };
+  
+      // Navigate to the Print page with tripData
+      history.push({
+        pathname: '/print',
+        state: tripData,
+      });
+    } catch (error) {
+      console.error("Error preparing data for printing:", error);
+      alert("Failed to prepare data for printing. Please try again.");
+    }
   };
+  
+  
 
   return (
     <div style={{ display: 'flex' }}>

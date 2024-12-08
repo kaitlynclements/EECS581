@@ -33,7 +33,7 @@ function Print() {
                 ))}
               </ul>
             ) : (
-              <p>No activities for this trip.</p>
+              <p>{activities[trip.id]}</p>
             )}
           </div>
         ))
