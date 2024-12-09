@@ -1,7 +1,8 @@
 Kaitlyn Clements
   12/02: .5 hours- Organizing github and uploading proper references for final sprint. 
   12/07: 1.5 hours- Fetching First Name, Last Name, and Email for users for print screen, had to debug a few times to get correct Trip Management page from changes. 
-  Total Hours: 2
+  12/08: 1 hour- Writing up outline for presentation video, filming presentation video
+  Total Hours: 3
   
 Taylor Slade
   12/7: 3 hours - share and collaborate on trips functionality added
