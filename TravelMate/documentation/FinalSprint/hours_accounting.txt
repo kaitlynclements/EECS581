@@ -13,8 +13,10 @@ Sam Muelehbach
   Total Hours: 3 hours
   
 Aaditi Chinawalker
-  ...
-  Total Hours: 0
+  12/7: 1 hour- Testing new functionalities added
+  12/7: 1 hour - debugging and attempting to add PDF functionality
+  12/8: 1 hour - making presentation video
+  Total Hours: 3
   
 Lizzie Soltis
   12/3: 2 hours - Debugging and trying to implement export itinerary PDF functionality
